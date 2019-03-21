@@ -73,13 +73,20 @@ public class TimeCardFragment extends AppCompatActivity {
         endHr = mTimeCard.getmEndHour();
         endMin = mTimeCard.getmEndMinute();
 
+        String startStr = "Start Time: " + mTimeCard.getStartTime();
+        String endStr = "End Time: " + mTimeCard.getEndTime();
+        String paidStr = "Paid Time: " + mTimeCard.getPaidTime();
+        String unpaidStr = "Unpaid Time: " + mTimeCard.getUnpaidTime() + " mins";
+        String meetingStr = "Meeting/Travel: " + mTimeCard.getTravelTime() + " mins";
+        String prodStr = mTimeCard.getProductivity() + "%";
 
-        startTimeText.setText("Start Time: " + mTimeCard.getStartTime());
-        endTimeText.setText("End Time: " + mTimeCard.getEndTime());
-        paidTime.setText("Paid Time: " + mTimeCard.getPaidTime());
-        txtUnpaidTime.setText("Unpaid Time: " + mTimeCard.getUnpaidTime() + " mins");
-        txtPaidBreak.setText("Meeting/Travel: " + mTimeCard.getTravelTime() + " mins");
-        txtProductivity.setText(mTimeCard.getProductivity() + "%");
+
+        startTimeText.setText(startStr);
+        endTimeText.setText(endStr);
+        paidTime.setText(paidStr);
+        txtUnpaidTime.setText(unpaidStr);
+        txtPaidBreak.setText(meetingStr);
+        txtProductivity.setText(prodStr);
 
 
     }
@@ -242,11 +249,21 @@ public class TimeCardFragment extends AppCompatActivity {
     public void setAlarm(View view) {
         Intent alarm = new Intent(AlarmClock.ACTION_SET_ALARM);
 
-        if(endHr>=24) endHr -=24;
+        if(endHr>=24 & endHr < 48) {
+            endHr -= 24;
 
-                alarm.putExtra(AlarmClock.EXTRA_HOUR, endHr);
-                alarm.putExtra(AlarmClock.EXTRA_MINUTES, endMin);
-                startActivity(alarm);
+
+            alarm.putExtra(AlarmClock.EXTRA_HOUR, endHr);
+            alarm.putExtra(AlarmClock.EXTRA_MINUTES, endMin);
+            startActivity(alarm);
+            endHr +=24;
+        }
+        else if(endHr<24){
+            alarm.putExtra(AlarmClock.EXTRA_HOUR, endHr);
+            alarm.putExtra(AlarmClock.EXTRA_MINUTES, endMin);
+            startActivity(alarm);
+        }
+        else Toast.makeText(this, "Cannot set alarm for more than one day from now", Toast.LENGTH_LONG).show();
 
          closeFABMenu();
     }
