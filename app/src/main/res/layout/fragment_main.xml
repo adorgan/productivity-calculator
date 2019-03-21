@@ -30,7 +30,7 @@
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button"
+                android:text="@string/button"
                 android:visibility="invisible" />
 
             <TextView
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:text="Time"
+                android:text="@string/time"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
                 android:textSize="48sp"
                 android:visibility="visible" />
@@ -71,7 +71,7 @@
                 android:layout_marginBottom="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
 
-                android:text="90%"
+                android:text="@string/_90"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
                 android:textSize="48sp"
                 android:visibility="visible" />
@@ -152,7 +152,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:minWidth="0dp"
 
-                android:text="Start Time"
+                android:text="@string/start_time"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textColor="@color/colorAccent"
                 android:textSize="18sp" />
@@ -166,7 +166,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:minWidth="0dp"
 
-                android:text="Productivity"
+                android:text="@string/productivity"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
@@ -180,7 +180,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:minWidth="0dp"
 
-                android:text="Minutes"
+                android:text="@string/minutes"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
@@ -200,7 +200,7 @@
 
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="Calculate Time Stamp"
+        android:text="@string/calculate_time_stamp"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@android:color/white"
         android:textSize="18sp"
