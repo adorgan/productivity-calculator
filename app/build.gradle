@@ -4,11 +4,11 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.myApp.adorg.simplecalculatorv2"
-        minSdkVersion 21
+        minSdkVersion 15
         targetSdkVersion 28
-        versionCode 7
+        versionCode 9
         vectorDrawables.useSupportLibrary true
-        versionName "1.5"
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

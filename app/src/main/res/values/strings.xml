@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Therapy Productivity Calculator</string>
-    <string name="title_activity_settings">Settings</string>
     <string name="paid_meeting_travel">Paid Meeting/Travel</string>
     <string name="unpaid_break_lunch">Unpaid Break/Lunch</string>
     <string name="total_treatment_time">Total Treatment Time</string>
