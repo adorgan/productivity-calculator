@@ -15,5 +15,33 @@
     <string name="button">Button</string>
     <string name="time">Time</string>
     <string name="_90">90%</string>
-    <string name="calculate_time_stamp">Calculate Time Stamp</string>
+    <string name="calculate_time_stamp">Create Time Card</string>
+    <string name="no_history">No History</string>
+    <string name="sad_face">sad face</string>
+    <string name="list_item_date">Date</string>
+    <string name="list_item_start">Start Time</string>
+    <string name="list_item_paid">Paid Time</string>
+    <string name="placeholder">TextView</string>
+    <string name="main_menu_settings">Settings</string>
+    <string name="main_menu_history">History</string>
+    <string name="main_menu_help">Help</string>
+    <string name="time_card_menu_save">Save</string>
+    <string name="history_menu_clear">Clear</string>
+
+    <string name="hello_blank_fragment">Are you sure you want to clear your history?</string>
+    <string name="treatment_time_time_card">Treatment Time</string>
+    <string name="title_activity_history_time_card">HistoryTimeCardActivity</string>
+    <string name="delete_history_item">delete</string>
+    <string name="delete_this_time_card">Delete this time card?</string>
+    <string name="button_toolbar">Button</string>
+    <string name="change_log">Welcome to Version 2.0 of the Therapy Productivity Calculator! Here are a list of the key changes:\n
+    -The treatment time, productivity, and minutes options are on one screen.\n
+    -Time cards can now be calculated for up to 24hrs worked.\n
+    -Time cards can be saved to a history (history icon located on the top right of the home screen).\n
+    -Saved time cards can be edited and will re-calculate based on changes made.\n
+    -Highlight one or more time cards in the History screen to get various statistics, or delete them from your history.\n
+    -24hr time can be enabled in the settings menu.\n
+    -Check the Help menu to see visual instructions for key features\n
+    -Enjoy!</string>
+
 </resources>

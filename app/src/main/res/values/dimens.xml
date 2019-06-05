@@ -6,4 +6,5 @@
     <dimen name="standard_55L">50dp</dimen>
     <dimen name="standard_105L">100dp</dimen>
     <dimen name="standard_155L">150dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

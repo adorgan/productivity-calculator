@@ -28,7 +28,7 @@ public class ProductivityPicker extends DialogFragment {
         double prodVal = getArguments().getDouble(ARG_PRODUCTIVITY);
 
         mNumberPicker = v.findViewById(R.id.layout_number_picker);
-        mNumberPicker.setMinValue(0);
+        mNumberPicker.setMinValue(1);
         mNumberPicker.setMaxValue(100);
         mNumberPicker.setValue((int) prodVal);
 

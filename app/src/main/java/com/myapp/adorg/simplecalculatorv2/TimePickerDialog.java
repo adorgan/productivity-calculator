@@ -50,17 +50,12 @@ public class TimePickerDialog extends DialogFragment {
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 
-
-
-
-
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-        int hour = getArguments().getInt(ARG_HOUR);
-        int minute = getArguments().getInt(ARG_MINUTE);
+        final int mHour = getArguments().getInt(ARG_HOUR);
+        final int mMinute = getArguments().getInt(ARG_MINUTE);
         boolean is24Hour = getArguments().getBoolean(ARG_24HOUR);
 
 
@@ -68,7 +63,7 @@ public class TimePickerDialog extends DialogFragment {
                 .inflate(R.layout.time_picker_dialog, null);
 
         mTimePicker = v.findViewById(R.id.time_picker);
-        setTime(hour, minute);
+        setTime(mHour, mMinute);
         if(is24Hour){
             mTimePicker.setIs24HourView(true);
         }else mTimePicker.setIs24HourView(false);
@@ -81,6 +76,9 @@ public class TimePickerDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         int hour;
                         int minute;
+
+
+
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             hour = mTimePicker.getHour();
                             minute = mTimePicker.getMinute();
@@ -89,7 +87,10 @@ public class TimePickerDialog extends DialogFragment {
                             minute = mTimePicker.getCurrentMinute();
                         }
                         boolean isTwentyFour = mTimePicker.is24HourView();
-                        sendTimeResult(Activity.RESULT_OK, hour, minute, isTwentyFour);
+
+                        if(mHour==hour & mMinute == minute)
+                            return;
+                        else sendTimeResult(Activity.RESULT_OK, hour, minute, isTwentyFour);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

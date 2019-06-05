@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <item
         android:id="@+id/settings"
-        android:title="Settings"/>
+        android:title="@string/main_menu_settings"/>
+
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/history"
+        android:title="@string/main_menu_history"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/settingsHelp"
-        android:title="Help" />
-    <item
-        android:id="@+id/settingsHistory"
-        android:title="Send Feedback" />
+        android:title="@string/main_menu_help" />
 </menu>

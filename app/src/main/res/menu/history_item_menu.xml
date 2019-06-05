@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <item
+        android:id="@+id/historyMenuEdit"
+        android:icon="@drawable/edit_icon"
+        android:title="Edit"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/deleteHistoryItem"
+
+        android:icon="@drawable/delete_icon"
+        android:title="@string/delete_history_item"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menuItemSaved"
+        android:icon="@drawable/check_menu"
+        android:title="Save"
+        app:showAsAction="always" />
+</menu>

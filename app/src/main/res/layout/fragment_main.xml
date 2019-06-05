@@ -3,8 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolBarThemeMain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="4dp">
+
+            <Button
+                android:id="@+id/dateToolbarButton"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@string/button_toolbar"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,11 +51,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/mainToolbar"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
@@ -27,7 +64,7 @@
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="28dp"
                 android:text="@string/button"
                 android:visibility="invisible" />
 
@@ -44,10 +81,13 @@
                 android:id="@+id/txtViewStartTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginBottom="42dp"
+                android:background="?attr/selectableItemBackground"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:text="@string/time"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/colorBlack"
                 android:textSize="48sp"
                 android:visibility="visible" />
 
@@ -64,11 +104,14 @@
                 android:id="@+id/txtViewProductivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginBottom="42dp"
+                android:background="?attr/selectableItemBackground"
 
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:text="@string/_90"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/colorBlack"
                 android:textSize="48sp"
                 android:visibility="visible" />
 
@@ -85,13 +128,16 @@
                 android:id="@+id/txtTreatmentMinutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:ems="10"
+
                 android:gravity="center_horizontal"
                 android:hint="@string/total_treatment_time"
                 android:inputType="number"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/txtUnpaidMins"
@@ -102,7 +148,8 @@
                 android:hint="@string/unpaid_break_lunch"
                 android:inputType="number"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/txtPaidMins"
@@ -114,7 +161,8 @@
                 android:hint="@string/paid_meeting_travel"
                 android:inputType="number"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                tools:ignore="Autofill" />
 
         </LinearLayout>
     </ScrollView>
@@ -182,15 +230,15 @@
 
     <Button
         android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:layout_marginBottom="16dp"
         android:layout_weight="1"
-        android:background="@drawable/ripple_button"
-        android:elevation="2dp"
 
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:background="@drawable/button"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:text="@string/calculate_time_stamp"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@android:color/white"
