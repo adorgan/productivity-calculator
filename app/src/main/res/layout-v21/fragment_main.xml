@@ -115,6 +115,7 @@
                 android:visibility="visible" />
 
             <TextView
+                android:id="@+id/txtViewMinutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -127,10 +128,12 @@
                 android:id="@+id/txtTreatmentMinutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:focusable="false"
                 android:gravity="center_horizontal"
                 android:hint="@string/total_treatment_time"
                 android:inputType="number"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="italic"
@@ -140,10 +143,11 @@
                 android:id="@+id/txtUnpaidMins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:gravity="center_horizontal"
                 android:hint="@string/unpaid_break_lunch"
                 android:inputType="number"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="italic"
                 tools:ignore="Autofill" />
@@ -153,10 +157,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:ems="10"
                 android:gravity="center_horizontal"
                 android:hint="@string/paid_meeting_travel"
                 android:inputType="number"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="italic"
                 tools:ignore="Autofill" />

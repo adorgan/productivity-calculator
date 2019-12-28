@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -45,12 +46,15 @@ public class CalculatorFragment extends Fragment{
     private static final int REQUEST_TIME = 0;
     private static final int REQUEST_PROD = 1;
     private static final int REQUEST_DATE = 2;
+    private static final int REQUEST_MINUTES = 3;
     private Date mDate;
     private Calendar c= Calendar.getInstance();
     private Calendar d= Calendar.getInstance();
     private TimeCard mTimeCard;
     private SimpleDateFormat df24 = new SimpleDateFormat("HH:mm");
     private SimpleDateFormat df12 = new SimpleDateFormat("h:mm a");
+
+    private TextView txtViewMinutes;
 
 
 
@@ -66,6 +70,7 @@ public class CalculatorFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container,false);
+
 
         //Change log prompt
         if(!Preferences.getChangeLogSeen(getContext())){
@@ -83,7 +88,7 @@ public class CalculatorFragment extends Fragment{
             mMinute = savedInstanceState.getInt("MINUTE");
             mDate = new Date(savedInstanceState.getLong("TIME_CARD_DATE"));
             mdateString = savedInstanceState.getString("DATE_STRING");
-
+            mTreatmentMins = savedInstanceState.getInt("TXMINUTES");
         }
         else {
             mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -126,22 +131,13 @@ public class CalculatorFragment extends Fragment{
 
         //Enter treatment minutes
         treatmentMinutes = view.findViewById(R.id.txtTreatmentMinutes);
-        treatmentMinutes.addTextChangedListener(new TextWatcher() {
-
+        treatmentMinutes.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try {
-                    mTreatmentMins = Integer.parseInt(s.toString());
-                }catch (NumberFormatException e){
-                    mTreatmentMins = 0;
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                MinutesDialog minutesDialog = new MinutesDialog();
+                minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_MINUTES);
+                minutesDialog.show(fm,"dialog_minutes");
             }
         });
         unpaidMins = view.findViewById(R.id.txtUnpaidMins);
@@ -207,6 +203,8 @@ public class CalculatorFragment extends Fragment{
                 int totalTreatHrs;
                 int totalTreatMns;
                 int endHr, endMin;
+                String strTxMinutes;
+                String strHH, strMM, strMM2;
 
                 double inverse = mProductivity / 100;
                 totalTreatMins = (int) (mTreatmentMins / inverse) + mPaidMins;
@@ -219,6 +217,12 @@ public class CalculatorFragment extends Fragment{
 
                 d.set(0,0,0, endHr, endMin);
                 DecimalFormat decimalFormat2 = new DecimalFormat("#");
+
+                if(totalTreatHrs == 1) strHH = " hr ";
+                else strHH = " hrs ";
+
+                if(totalTreatMns == 1) strMM = " min";
+                else strMM = " mins";
 
                 if((totalTreatMins + mUnpaidMins) <1440) {
 
@@ -238,7 +242,8 @@ public class CalculatorFragment extends Fragment{
                     mTimeCard.setProductivity(decimalFormat2.format(mProductivity));
                     mTimeCard.setTravelTime(String.valueOf(mPaidMins));
                     mTimeCard.setUnpaidTime(String.valueOf(mUnpaidMins));
-                    mTimeCard.setPaidTime(decimalFormat2.format(totalTreatHrs) + " hrs " + decimalFormat2.format(totalTreatMns) + " mins");
+
+                    mTimeCard.setPaidTime(decimalFormat2.format(totalTreatHrs) + strHH + decimalFormat2.format(totalTreatMns) + strMM);
                     mTimeCard.setDate(mdateString);
                     mTimeCard.setMcardDate(mDate);
                     mTimeCard.setmProductivityDouble(mProductivity);
@@ -301,6 +306,7 @@ public class CalculatorFragment extends Fragment{
         outState.putInt("HOUR", mHour);
         outState.putInt("MINUTE", mMinute);
         outState.putBoolean("ISTWENTYFOUR", mIsTwentyFour);
+        outState.putInt("TXMINUTES", mTreatmentMins);
 
     }
 
@@ -340,6 +346,33 @@ public class CalculatorFragment extends Fragment{
             SimpleDateFormat df = new SimpleDateFormat("EE, MMM d, yyyy", Locale.US);
             mdateString = df.format(mDate);
             mToolbarDateButton.setText(mdateString);
+        } else if (requestCode == REQUEST_MINUTES) {
+            String strTxMinutes;
+            String strHH, strMM, strMM2;
+            mTreatmentMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+            if(mTreatmentMins == 0){
+                strTxMinutes = "";
+            }
+            else {
+                int hr = mTreatmentMins / 60;
+                int min = mTreatmentMins % 60;
+
+                if(hr == 1) strHH = " hr ";
+                else strHH = " hrs ";
+
+                if(min == 1) strMM = " min";
+                else strMM = " mins";
+
+                if(mTreatmentMins == 1) strMM2 = " min";
+                else strMM2 = " mins";
+
+
+
+                strTxMinutes =  hr + strHH
+                        + min + strMM + " (" + mTreatmentMins + strMM2 + ")";
+            }
+            treatmentMinutes.setText(strTxMinutes);
+
         }
 }
     @Override

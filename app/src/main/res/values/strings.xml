@@ -43,5 +43,20 @@
     -24hr time can be enabled in the settings menu.\n
     -Check the Help menu to see visual instructions for key features\n
     -Enjoy!</string>
+    <string-array name="group">
+        <item>Group Size</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="patient_size">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 
 </resources>

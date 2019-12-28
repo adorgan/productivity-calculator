@@ -78,14 +78,25 @@ public class TimeCardFragment extends AppCompatActivity{
         String prodStr = mTimeCard.getProductivity() + "%";
         String treatTime = mTimeCard.getmTreatmentTime();
         String treatStr;
+        String strHH, strMM, strMM2;
         if(Integer.parseInt(treatTime) == 0){
             treatStr = "Treatment: 0 mins";
         }
         else {
+
             int hr = (Integer.parseInt(treatTime)) / 60;
             int min = (Integer.parseInt(treatTime)) % 60;
-            treatStr =  "Treatment: " + hr + " hrs "
-                    + min + " mins (" + treatTime + " mins)";
+
+            if (hr == 1) strHH = " hr ";
+            else strHH = " hrs ";
+
+            if (min == 1) strMM = " min";
+            else strMM = " mins";
+
+            if (Integer.parseInt(treatTime) == 1) strMM2 = " min";
+            else strMM2 = " mins";
+            treatStr = "Treatment: " + hr + strHH
+                    + min + strMM + " (" + treatTime + strMM2 + ")";
         }
 
 

@@ -449,6 +449,7 @@ public class HistoryTimeCardFragment extends Fragment{
         int totalTreatMins;
         int totalTreatHrs;
         int totalTreatMns;
+        String strHH, strMM;
 
         double inverse = newProductivity / 100;
         totalTreatMins = (int) (newTreatmentMins / inverse) + (int) newTravelTime;
@@ -460,6 +461,11 @@ public class HistoryTimeCardFragment extends Fragment{
         mHourHistory = (endTime / 60) - 24;
         else mHourHistory = endTime/60;
         mMinuteHistory = endTime % 60;
+        if(totalTreatHrs == 1) strHH = " hr ";
+        else strHH = " hrs ";
+
+        if(totalTreatMns == 1) strMM = " min";
+        else strMM = " mins";
 
         c.set(0, 0, 0, mHourHistory, mMinuteHistory);
 
@@ -474,7 +480,7 @@ public class HistoryTimeCardFragment extends Fragment{
                 endTimeString = df.format(c.getTime());
                 endTimeText.setText(endTimeString);
             }
-            newPaidString = totalTreatHrs + " hrs " + totalTreatMns + " mins";
+            newPaidString = totalTreatHrs + strHH + totalTreatMns + strMM;
             paidTime.setText("Paid Time: " + newPaidString);
             newPaidTime = totalTreatMins;
             endHourTotal = (mHourHistory*60) + mMinuteHistory;
@@ -483,6 +489,7 @@ public class HistoryTimeCardFragment extends Fragment{
     }
 
     private void reCalculateEndTime(){
+        String strHH, strMM;
         endHourTotal = (mHourHistory*60) + mMinuteHistory;
         double startHourTotal = (startHr*60) + startMin;
         double difference;
@@ -506,8 +513,6 @@ public class HistoryTimeCardFragment extends Fragment{
                 df = new SimpleDateFormat("HH:mm");
                 c.set(0, 0, 0, mHourHistory, mMinuteHistory);
             }
-            //mHourHistory = dummymHourHistory;
-            //mMinuteHistory = dummymMinuteHistory;
             endTimeString = df.format(c.getTime());
             endTimeText.setText(endTimeString);
 
@@ -524,13 +529,19 @@ public class HistoryTimeCardFragment extends Fragment{
 
 
             newPaidTime = (int) difference + (int)newTravelTime;
+            if((newPaidTime / 60) == 1) strHH = " hr ";
+            else strHH = " hrs ";
 
-            newPaidString = (newPaidTime / 60) + " hrs " + (newPaidTime % 60) + " mins";
+            if((newPaidTime % 60) == 1) strMM = " min";
+            else strMM = " mins";
+
+            newPaidString = (newPaidTime / 60) + strHH + (newPaidTime % 60) + strMM;
             paidTime.setText("Paid Time: " + newPaidString);
         }
 
     }
     private void reCalculateTravelTime(){
+        String strHH, strMM;
         endHourTotal = endHourTotal + newTravelTime;
         if(endHourTotal>1440) endHourTotal = endHourTotal-1440;
         mHourHistory = (int)endHourTotal/60;
@@ -548,13 +559,18 @@ public class HistoryTimeCardFragment extends Fragment{
 
 
             newPaidTime = (int) ((double)newTreatmentMins/(newProductivity/100)) + (int)newTravelTime;
+        if((newPaidTime / 60) == 1) strHH = " hr ";
+        else strHH = " hrs ";
 
-            newPaidString = (newPaidTime / 60) + " hrs " + (newPaidTime % 60) + " mins";
+        if((newPaidTime % 60) == 1) strMM = " min";
+        else strMM = " mins";
+            newPaidString = (newPaidTime / 60) + strHH + (newPaidTime % 60) + strMM;
             paidTime.setText("Paid Time: " + newPaidString);
 
 
     }
     private void reCalculateStartTime(){
+        String strHH, strMM;
         double startHourTotal = (startHr*60) + startMin;
          endHourTotal = (mHourHistory*60) + mMinuteHistory;
         double difference;
@@ -596,8 +612,12 @@ public class HistoryTimeCardFragment extends Fragment{
 
 
             newPaidTime = (int) difference + (int)newTravelTime;
+            if((newPaidTime / 60) == 1) strHH = " hr ";
+            else strHH = " hrs ";
 
-            newPaidString = (newPaidTime / 60) + " hrs " + (newPaidTime % 60) + " mins";
+            if((newPaidTime % 60) == 1) strMM = " min";
+            else strMM = " mins";
+            newPaidString = (newPaidTime / 60) + strHH + (newPaidTime % 60) + strMM;
             paidTime.setText("Paid Time: " + newPaidString);
         }
 
