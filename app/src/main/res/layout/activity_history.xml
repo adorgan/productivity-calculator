@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Theme.AppCompat.Light.DarkActionBar"
     android:layout_width="match_parent"
+    android:background="?attr/colorWgite"
     android:tag="history_fragment"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/historyToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/toolbarColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,12 +32,13 @@
         android:layout_marginBottom="8dp"
         android:text="@string/no_history"
         android:textSize="18sp"
+        android:textColor="?attr/textTitleColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/historyToolbar" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -59,4 +61,4 @@
         app:srcCompat="@drawable/unhappy"
         android:contentDescription="@string/sad_face" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

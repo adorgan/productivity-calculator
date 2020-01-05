@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="?attr/dialog_background"
     android:padding="16dp">
 
     <TextView
@@ -9,6 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Are you sure you want to delete?"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/textTitleColor"
         android:textSize="18sp" />
 </LinearLayout>

@@ -4,14 +4,17 @@ package com.myapp.adorg.simplecalculatorv2;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,6 +57,11 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Preferences.getDarkMode(getApplicationContext())) {
+            setTheme(R.style.DarkTheme);
+        } else {
+            setTheme(R.style.LightTheme);
+        }
         setContentView(R.layout.activity_history);
 
 
@@ -195,10 +203,30 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
             TimeCardHolder(LayoutInflater inflater, ViewGroup parent) {
                 super(inflater.inflate(R.layout.list_item_time_card, parent, false));
 
+                ConstraintLayout listItemLayout = itemView.findViewById(R.id.listItemConstraintLayout);
                 mDateTextView = itemView.findViewById(R.id.list_date);
                 mStartTimeTextView = itemView.findViewById(R.id.unPaidTime);
                 mProductivityTextView = itemView.findViewById(R.id.productivityTextView);
                 mPaidTime = itemView.findViewById(R.id.list_paid);
+                if(Preferences.getDarkMode(getApplicationContext())){
+                    mDateTextView.setTextColor(getResources().getColor(R.color.colorWgite));
+                    mStartTimeTextView.setTextColor(getResources().getColor(R.color.colorWgite));
+                    mProductivityTextView.setTextColor(getResources().getColor(R.color.colorWgite));
+                    mPaidTime.setTextColor(getResources().getColor(R.color.colorWgite));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        listItemLayout.setBackground(getDrawable(R.drawable.ripple_textbox));
+                    }
+
+                }
+                else{
+                    mDateTextView.setTextColor(getResources().getColor(R.color.colorBlack));
+                    mStartTimeTextView.setTextColor(getResources().getColor(R.color.darkGray));
+                    mProductivityTextView.setTextColor(getResources().getColor(R.color.colorBlack));
+                    mPaidTime.setTextColor(getResources().getColor(R.color.darkGray));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        listItemLayout.setBackground(getDrawable(R.drawable.ripple_textbox));
+                    }
+                }
                 itemView.setOnClickListener(this);
                 itemView.setOnLongClickListener(this);
 
@@ -242,8 +270,12 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                     menuEdit.setVisible(true);
                     menuClear.setVisible(false);
                     historyToolbar.setTitle(null);
-                    View v = view;
-                    v.setBackgroundColor(getResources().getColor(R.color.highlighted));
+
+                    if (Preferences.getDarkMode(getApplicationContext())) {
+                        view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    } else {
+                        view.setBackgroundColor(getResources().getColor(R.color.highlighted));
+                    }
                     historyToolbar.setNavigationIcon(R.drawable.ex_icon);
                     //selectedView = v;
 
@@ -259,7 +291,12 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                 deletedTimeCards.remove(mTimeCard);
             } else {
                 uuidArrayList.add(uuid);
-                view.setBackgroundColor(getResources().getColor(R.color.highlighted));
+                if (Preferences.getDarkMode(getApplicationContext())) {
+                    view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    view.setBackgroundColor(getResources().getColor(R.color.highlighted));
+                }
+
                 viewArrayList.add(view);
                 deletedTimeCards.add(mTimeCard);
             }

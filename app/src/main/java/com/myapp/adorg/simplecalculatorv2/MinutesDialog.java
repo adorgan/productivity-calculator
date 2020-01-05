@@ -5,27 +5,34 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import java.util.Date;
 
 
 public class MinutesDialog extends DialogFragment {
 
     private EditText editTextMM, editTextHH, editTextMinutes;
-    private String strHH, strMM, strMinutes;
+    private String strTitle;
     private int finalTxInt, finalHH, finalMM;
-    public static final String EXTRA_MINUTE = "dialog_extra_minute";
+
     boolean blMinutes=false, blHHMM = false;
+    private static final String ARG_DIALOG_TITLE = "dialog_title_Minutes_Dialog";
+    public static final String EXTRA_MINUTE = "dialog_extra_minute";
+
+    public static MinutesDialog newMinutesDialog(String dialogTitle) {
+        Bundle args = new Bundle();
+        args.putString(ARG_DIALOG_TITLE, dialogTitle);
+        MinutesDialog fragment = new MinutesDialog();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @NonNull
     @Override
@@ -34,6 +41,7 @@ public class MinutesDialog extends DialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_minutes, null);
 
+        strTitle = getArguments().getString(ARG_DIALOG_TITLE, "");
         editTextHH = v.findViewById(R.id.editTextDialogHH);
         editTextMM = v.findViewById(R.id.editTextDialogMM);
         editTextMinutes = v.findViewById(R.id.editTextDialogMinutes);
@@ -50,7 +58,6 @@ public class MinutesDialog extends DialogFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if(!s.toString().equals("")) {
-                    strHH = s.toString();
                     editTextMinutes.setFocusable(false);
                     blHHMM = true;
                 }
@@ -59,7 +66,6 @@ public class MinutesDialog extends DialogFragment {
                     if(editTextMM.getText().toString().equals("")){
                         editTextMinutes.setFocusable(true);
                         editTextMinutes.setFocusableInTouchMode(true);
-                        strHH = "";
                         blHHMM = false;
                     }
                 }
@@ -80,7 +86,6 @@ public class MinutesDialog extends DialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().equals("")) {
-                    strMM = s.toString();
                     editTextMinutes.setFocusable(false);
                     blHHMM = true;
                 }
@@ -88,7 +93,6 @@ public class MinutesDialog extends DialogFragment {
                     if(editTextHH.getText().toString().equals("")){
                         editTextMinutes.setFocusable(true);
                         editTextMinutes.setFocusableInTouchMode(true);
-                        strMM = "";
                         blHHMM = false;
                     }
 
@@ -110,7 +114,6 @@ public class MinutesDialog extends DialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().equals("")) {
-                    strMinutes = s.toString();
                     editTextHH.setFocusable(false);
                     editTextMM.setFocusable(false);
                     blMinutes = true;
@@ -120,7 +123,6 @@ public class MinutesDialog extends DialogFragment {
                     editTextHH.setFocusableInTouchMode(true);
                     editTextMM.setFocusable(true);
                     editTextMM.setFocusableInTouchMode(true);
-                    strMinutes = "";
                     blMinutes = false;
                 }
             }
@@ -132,9 +134,9 @@ public class MinutesDialog extends DialogFragment {
         });
 
 
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme)
                 .setView(v)
-                .setTitle("Treatment Minutes")
+                .setTitle(strTitle)
                 .setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             @Override

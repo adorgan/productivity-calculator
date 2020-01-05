@@ -3,13 +3,13 @@ package com.myapp.adorg.simplecalculatorv2;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -44,10 +44,17 @@ public class DeleteHistoryItemDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_history_delete_item, null);
+        int resId;
 
-        return new AlertDialog.Builder(getActivity())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            resId = R.style.MyDialogTheme;
+        } else {
+            resId = 0;
+        }
+
+        return new AlertDialog.Builder(getActivity(), resId)
                 .setView(v)
-                .setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sendTimeResult(Activity.RESULT_OK, true);

@@ -34,29 +34,25 @@
     <string name="delete_history_item">delete</string>
     <string name="delete_this_time_card">Delete this time card?</string>
     <string name="button_toolbar">Button</string>
-    <string name="change_log">Welcome to Version 2.0 of the Therapy Productivity Calculator! Here are a list of the key changes:\n
-    -The treatment time, productivity, and minutes options are on one screen.\n
-    -Time cards can now be calculated for up to 24hrs worked.\n
-    -Time cards can be saved to a history (history icon located on the top right of the home screen).\n
-    -Saved time cards can be edited and will re-calculate based on changes made.\n
-    -Highlight one or more time cards in the History screen to get various statistics, or delete them from your history.\n
-    -24hr time can be enabled in the settings menu.\n
-    -Check the Help menu to see visual instructions for key features\n
+    <string name="change_log">Welcome to Version 2.1 of the Therapy Productivity Calculator! Here are a list of the key changes:\n
+    -Times can be entered as minutes or HH:MM\n
+    -Dark theme available in settings\n
+    -With PDPM, I have received input to offer concurrent/group options. Personally, I just add up all treatment time (since all minutes are now seen as individual per CMS) to get my time card.\n
+    -Therefore, I have opted to not add specific concurrent or group options.\n
+    -If you have suggestions for how to implement concurrent/group into the app, let me know! (Help > Send Feedback)\n
     -Enjoy!</string>
     <string-array name="group">
-        <item>Group Size</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
+        <item>System Default</item>
+        <item>On</item>
+        <item>Off</item>
+
     </string-array>
     <string-array name="patient_size">
         <item>1</item>
         <item>2</item>
         <item>3</item>
-        <item>4</item>
-        <item>5</item>
     </string-array>
+    
+    <string name="dark_mode_key">Dark Mode Key</string>
 
 </resources>

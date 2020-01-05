@@ -4,10 +4,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -29,11 +29,11 @@ public class ProductivityPicker extends DialogFragment {
 
         mNumberPicker = v.findViewById(R.id.layout_number_picker);
         mNumberPicker.setMinValue(1);
-        mNumberPicker.setMaxValue(100);
+        mNumberPicker.setMaxValue(150);
         mNumberPicker.setValue((int) prodVal);
 
 
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme)
                 .setView(v)
                 .setTitle(R.string.set_productivity)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

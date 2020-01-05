@@ -4,10 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -29,10 +30,18 @@ public class ClearFragment extends DialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_clear, null);
 
+        int resId;
 
-        return new AlertDialog.Builder(getActivity())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            resId = R.style.MyDialogTheme;
+        } else {
+            resId = 0;
+        }
+
+
+        return new AlertDialog.Builder(getActivity(), resId)
                 .setView(v)
-                .setPositiveButton("clear", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Clear", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.isCleared(true);

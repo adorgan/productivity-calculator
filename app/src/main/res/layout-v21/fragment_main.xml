@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/colorWgite"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
 
-        android:background="?attr/colorPrimary"
+        android:background="?attr/toolbarColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolBarThemeMain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@android:color/white">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
+                android:background="@drawable/ripple_blue_button"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@string/button_toolbar"
@@ -39,7 +40,8 @@
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -73,7 +75,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="@string/start_time"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textSize="14sp"
+                android:textColor="?attr/textTitleColor"
+                android:textSize="18sp"
                 android:visibility="visible" />
 
             <TextView
@@ -81,13 +84,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="42dp"
-                android:background="?attr/selectableItemBackground"
+                android:background="@drawable/ripple_textbox"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@string/time"
+
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-                android:textColor="@color/colorBlack"
-                android:textSize="48sp"
+                android:textColor="?attr/textClickColor"
+                android:textSize="60sp"
                 android:visibility="visible" />
 
             <TextView
@@ -96,7 +100,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="@string/productivity"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textSize="14sp"
+                android:textColor="?attr/textTitleColor"
+                android:textSize="18sp"
                 android:visibility="visible" />
 
             <TextView
@@ -104,14 +109,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="42dp"
-                android:background="?attr/selectableItemBackground"
+                android:background="@drawable/ripple_textbox"
 
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@string/_90"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-                android:textColor="@color/colorBlack"
-                android:textSize="48sp"
+                android:textColor="?attr/textClickColor"
+                android:textSize="60sp"
                 android:visibility="visible" />
 
             <TextView
@@ -121,7 +126,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="@string/minutes"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textSize="14sp"
+                android:textColor="?attr/textTitleColor"
+                android:textSize="18sp"
                 android:visibility="visible" />
 
             <EditText
@@ -131,20 +137,30 @@
                 android:focusable="false"
                 android:gravity="center_horizontal"
                 android:hint="@string/total_treatment_time"
+                android:textColorHighlight="?attr/colorWgite"
                 android:inputType="number"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="18sp"
                 android:textStyle="italic"
+                app:backgroundTint="?attr/textClickColor"
+                android:textColorHint="?attr/darkGray"
+                android:textColor="?attr/textClickColor"
                 tools:ignore="Autofill" />
+
 
             <EditText
                 android:id="@+id/txtUnpaidMins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:gravity="center_horizontal"
                 android:hint="@string/unpaid_break_lunch"
+                app:backgroundTint="?attr/textClickColor"
+                android:textColorHint="?attr/darkGray"
+                android:textColor="?attr/textClickColor"
                 android:inputType="number"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
@@ -157,8 +173,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
+                android:focusable="false"
                 android:gravity="center_horizontal"
                 android:hint="@string/paid_meeting_travel"
+                android:textColorHint="?attr/darkGray"
+                app:backgroundTint="?attr/textClickColor"
+                android:textColor="?attr/textClickColor"
                 android:inputType="number"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
@@ -169,7 +189,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -228,7 +248,7 @@
 
         </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <Button
         android:id="@+id/button2"
@@ -244,11 +264,11 @@
         android:paddingRight="24dp"
         android:text="@string/calculate_time_stamp"
         android:textAppearance="@style/TextAppearance.AppCompat"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/colorWgite"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

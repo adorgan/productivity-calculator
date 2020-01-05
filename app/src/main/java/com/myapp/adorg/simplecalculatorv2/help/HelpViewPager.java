@@ -3,23 +3,20 @@ package com.myapp.adorg.simplecalculatorv2.help;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.myapp.adorg.simplecalculatorv2.ClearFragment;
-import com.myapp.adorg.simplecalculatorv2.DeleteHistoryItemDialogActivity;
+import com.myapp.adorg.simplecalculatorv2.Preferences;
 import com.myapp.adorg.simplecalculatorv2.R;
-import com.myapp.adorg.simplecalculatorv2.StatsFragment;
 
 public class HelpViewPager extends AppCompatActivity {
 
@@ -30,6 +27,11 @@ public class HelpViewPager extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Preferences.getDarkMode(getApplicationContext())) {
+            setTheme(R.style.DarkTheme);
+        } else {
+            setTheme(R.style.LightTheme);
+        }
         setContentView(R.layout.help_viewpager);
 
         viewPager = findViewById(R.id.helpViewPager);

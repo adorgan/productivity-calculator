@@ -4,10 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -27,9 +28,17 @@ public class DeleteHistoryItemDialogActivity extends DialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.delete_history_item_dialog_history, null);
 
-        return new AlertDialog.Builder(getActivity())
+        int resId;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            resId = R.style.MyDialogTheme;
+        } else {
+            resId = 0;
+        }
+
+        return new AlertDialog.Builder(getActivity(), resId)
                 .setView(v)
-                .setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.isDeleted(true);

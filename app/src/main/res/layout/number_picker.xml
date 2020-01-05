@@ -3,6 +3,8 @@
     android:id="@+id/layout_number_picker"
     android:layout_width="100dp"
     android:layout_height="wrap_content"
+    android:background="?attr/dialog_background"
     android:theme="?attr/alertDialogStyle">
+
 
 </NumberPicker>

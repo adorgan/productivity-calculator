@@ -2,18 +2,14 @@ package com.myapp.adorg.simplecalculatorv2;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
@@ -47,9 +43,14 @@ public class DatePickerDialog extends DialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_date_picker_dialog, null);
         mDatePicker = v.findViewById(R.id.dialog_date_picker);
+        if (Preferences.getDarkMode(getContext())) {
+            mDatePicker.setBackgroundColor(getResources().getColor(R.color.darkGray));
+        }
+
+
         mDatePicker.init(year, month, day, null);
 
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme)
                 .setView(v)
                 .setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {

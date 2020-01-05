@@ -1,20 +1,81 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorPrimary">#1565C0</item>
+        <item name="colorPrimaryDark">#125297</item>
+        <item name="colorAccent">#FF5010</item>
+        <item name="colorWgite">#FFFFFF</item>
+        <item name="colorBlack">#000000</item>
+        <item name="highlighted">#BBDEFB</item>
+        <item name="darkGray">#242424</item>
+
 
 
     </style>
+
+    <style name="ActionBarLight" parent="@android:style/Widget.Holo.ListPopupWindow">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="LightTheme" parent="AppTheme">
+
+        <item name="mainColor">#1976D2</item>
+        <item name="secondColor">#125297</item>
+        <item name="accentColor">#FF5010</item>
+        <item name="colorWgite">#FFFFFF</item>
+        <item name="textTitleColor">#000000</item>
+        <item name="textClickColor">#000000</item>
+        <item name="highlighted">#BBDEFB</item>
+        <item name="darkGray">#9B9B9B</item>
+        <item name="buttonColor">#1976D2</item>
+        <item name="toolbarColor">#1976D2</item>
+        <item name="rippleColor">#BDBDBD</item>
+        <item name="blueRippleColor">#104F8F</item>
+        <item name="secondaryText">#202020</item>
+        <item name="dialog_background">#FFFFFF</item>
+    </style>
+
+    <style name="DarkTheme" parent="AppTheme">
+        <item name="android:textColorPrimary">?attr/accentColor</item>
+        <item name="android:textColorSecondary">?attr/accentColor</item>
+        <item name="android:itemBackground" >@drawable/ripple_popup</item>
+        <item name="android:textColor" tools:targetApi="lollipop">@color/colorWgite</item>
+        <item name="mainColor">#0C0C0C</item>
+        <item name="secondColor">#1B1B1B</item>
+        <item name="accentColor">#1565C0</item>
+        <item name="textTitleColor">#FFFFFF</item>
+        <item name="textClickColor">#1565C0</item>
+        <item name="colorBlack">#B8B6B6</item>
+        <item name="highlighted">#554E4E</item>
+        <item name="darkGray">#575656</item>
+        <item name="buttonColor">#D84315</item>
+        <item name="colorWgite">#0F0F0F</item>
+        <item name="toolbarColor">#0F0F0F</item>
+        <item name="rippleColor">#252525</item>
+        <item name="blueRippleColor">#252525</item>
+        <item name="secondaryText">#FFFFFF</item>
+        <item name="dialog_background">#252525</item>
+    </style>
+
+    <!-- Base application theme. -->
+
     <style name="ActionBarAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+    </style>
+
+    <style name="ActionBarAppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">#0F0F0F</item>
+    <item name="android:background">#0F0F0F</item>
+    <item name="android:textColor">@color/colorWgite</item>
+    <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="android:listDivider">@color/colorWgite</item>
 
     </style>
 
@@ -43,6 +104,23 @@
         </item>
 
     </style>
+
+    <style name="popupMenuLight" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/colorWgite</item>
+    </style>
+    <style name="popupMenuDark" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/colorBlack</item>
+        <item name="android:textColor">@color/colorWgite</item>
+    </style>
+
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">?attr/dialog_background</item>
+        <item name="colorPrimary">?attr/dialog_background</item>
+        <item name="colorAccent">?attr/accentColor</item>
+        <item name="android:textColorHint">?attr/darkGray</item>
+        <item name="editTextColor">?attr/textClickColor</item>
+    </style>
+
 
 
 </resources>

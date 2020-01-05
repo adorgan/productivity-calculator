@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="mainColor" format="color"/>
+    <attr name="secondColor" format="color"/>
+    <attr name="accentColor" format="color"/>
+    <attr name="textTitleColor" format="color"/>
+    <attr name="textClickColor" format="color"/>
+    <attr name="colorWgite" format="color"/>
+    <attr name="colorBlack" format="color"/>
+    <attr name="highlighted" format="color"/>
+    <attr name="darkGray" format="color"/>
+    <attr name="buttonColor" format="color"/>
+    <attr name="toolbarColor" format="color"/>
+    <attr name="rippleColor" format="color"/>
+    <attr name="blueRippleColor" format="color"/>
+    <attr name="secondaryText" format="color"/>
+    <attr name="dialog_background" format="color"/>
+    <attr name="title_white" format="color"/>
+    <attr name="clock_background" format="color"/>
+</resources>

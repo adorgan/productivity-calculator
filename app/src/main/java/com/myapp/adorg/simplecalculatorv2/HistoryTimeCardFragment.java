@@ -6,12 +6,12 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.AlarmClock;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -181,7 +181,7 @@ public class HistoryTimeCardFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance(newTreatmentMins, endHourTotal);
+                MinutesDialog changeNumberDialog = MinutesDialog.newMinutesDialog("Enter New Treatment Amount");
                 changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TREAT_MINS );
                 changeNumberDialog.show(fm, DIALOG_TREAT_MINS);
             }
@@ -192,7 +192,7 @@ public class HistoryTimeCardFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance((int)newUnpaidTime, endHourTotal);
+                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance("New Unpaid Time", (int)newUnpaidTime, endHourTotal);
                 changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_UNPAID);
                 changeNumberDialog.show(fm, DIALOG_UNPAID);
 
@@ -205,7 +205,7 @@ public class HistoryTimeCardFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance((int)newTravelTime, endHourTotal);
+                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance("New Paid Time", (int)newTravelTime, endHourTotal);
                 changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TRAVEL);
                 changeNumberDialog.show(fm, DIALOG_TRAVEL);
             }
@@ -312,7 +312,13 @@ public class HistoryTimeCardFragment extends Fragment{
     }
     private void setUnClickable(TextView txtview){
         txtview.setClickable(false);
-        txtview.setTextColor(getResources().getColor(R.color.colorBlack));
+        if(Preferences.getDarkMode(getContext())){
+            txtview.setTextColor(getResources().getColor(R.color.colorWgite));
+        }
+        else{
+            txtview.setTextColor(getResources().getColor(R.color.colorBlack));
+        }
+
     }
     private void returnFromEdit(){
         setUnClickable(startTimeText);
@@ -394,10 +400,10 @@ public class HistoryTimeCardFragment extends Fragment{
         }
         else if(requestCode == REQUEST_TREAT_MINS){
 
-            if(data.getIntExtra(ChangeNumberDialog.EXTRA_Minutes, 0)==0)
+            if(data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0)==0)
                 Toast.makeText(getContext(), "Unable to calculate", Toast.LENGTH_LONG).show();
             else {
-                newTreatmentMins = data.getIntExtra(ChangeNumberDialog.EXTRA_Minutes, 0);
+                newTreatmentMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
 
                 treatStr = (newTreatmentMins / 60) + " hrs " + (newTreatmentMins % 60) + " mins (" + newTreatmentMins + " mins)";
                 txtTreatmentTime.setText(treatStr);

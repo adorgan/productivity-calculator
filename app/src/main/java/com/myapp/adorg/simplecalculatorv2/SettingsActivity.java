@@ -2,16 +2,39 @@ package com.myapp.adorg.simplecalculatorv2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.ActionBar;
+import android.preference.SwitchPreference;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
+
+    SwitchPreference prefDarkMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.ActionBarAppTheme);
+        super.onCreate(savedInstanceState);
+        if (Preferences.getDarkMode(getApplicationContext())) {
+            setTheme(R.style.ActionBarAppThemeDark);
+        } else {
+            setTheme(R.style.ActionBarAppTheme);
+        }
+        setContentView(R.layout.settings_activity_layout);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.settings_container, new SettingsFragment(), "settings")
+                .commit();
+
+        /*
+        if (Preferences.getDarkMode(getApplicationContext())) {
+            setTheme(R.style.ActionBarAppThemeDark);
+        } else {
+            setTheme(R.style.ActionBarAppTheme);
+        }
         super.onCreate(savedInstanceState);
         setupActionBar();
         getFragmentManager().beginTransaction().replace(android.R.id.content, new GeneralPreferenceFragment()).commit();
@@ -24,6 +47,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(true);
         }
+
+
     }
 
     public static class GeneralPreferenceFragment extends PreferenceFragment {
@@ -34,6 +59,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_generals);
             setHasOptionsMenu(true);
+
+
 
 
         }
@@ -47,6 +74,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
             return super.onOptionsItemSelected(item);
         }
+        */
+
     }
 
 }

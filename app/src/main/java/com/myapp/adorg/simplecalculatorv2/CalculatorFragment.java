@@ -4,15 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,7 +45,9 @@ public class CalculatorFragment extends Fragment{
     private static final int REQUEST_TIME = 0;
     private static final int REQUEST_PROD = 1;
     private static final int REQUEST_DATE = 2;
-    private static final int REQUEST_MINUTES = 3;
+    private static final int REQUEST_TX_MINUTES = 3;
+    private static final int REQUEST_UNPAID_MINUTES = 4;
+    private static final int REQUEST_PAID_MINUTES = 5;
     private Date mDate;
     private Calendar c= Calendar.getInstance();
     private Calendar d= Calendar.getInstance();
@@ -55,6 +56,7 @@ public class CalculatorFragment extends Fragment{
     private SimpleDateFormat df12 = new SimpleDateFormat("h:mm a");
 
     private TextView txtViewMinutes;
+    private boolean isDarkMode;
 
 
 
@@ -62,6 +64,7 @@ public class CalculatorFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
 
     }
@@ -71,12 +74,12 @@ public class CalculatorFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container,false);
 
-
+        isDarkMode = Preferences.getDarkMode(getContext());
         //Change log prompt
-        if(!Preferences.getChangeLogSeen(getContext())){
+        if(!Preferences.getChangeLogSeen2(getContext())){
             FragmentManager fm = getFragmentManager();
             ChangeLog cm = new ChangeLog();
-            fm.beginTransaction().add(cm, "change_log").commit();
+            fm.beginTransaction().add(cm, "change_log2").commit();
         }
 
         mTimeCard = new TimeCard(UUID.randomUUID());
@@ -89,6 +92,8 @@ public class CalculatorFragment extends Fragment{
             mDate = new Date(savedInstanceState.getLong("TIME_CARD_DATE"));
             mdateString = savedInstanceState.getString("DATE_STRING");
             mTreatmentMins = savedInstanceState.getInt("TXMINUTES");
+            mPaidMins = savedInstanceState.getInt("PAID_MINS");
+            mUnpaidMins = savedInstanceState.getInt("UNPAID_MINS");
         }
         else {
             mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -135,43 +140,29 @@ public class CalculatorFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                MinutesDialog minutesDialog = new MinutesDialog();
-                minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_MINUTES);
+                MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Total Treatment Time");
+                minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_TX_MINUTES);
                 minutesDialog.show(fm,"dialog_minutes");
             }
         });
         unpaidMins = view.findViewById(R.id.txtUnpaidMins);
-        unpaidMins.addTextChangedListener(new TextWatcher() {
+        unpaidMins.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try {
-                    mUnpaidMins = Integer.parseInt(s.toString());
-                } catch (NumberFormatException c){
-                    mUnpaidMins = 0;
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Unpaid Break/Lunch");
+                minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_UNPAID_MINUTES);
+                minutesDialog.show(fm,"dialog_unpaid_minutes");
             }
         });
         paidMins = view.findViewById(R.id.txtPaidMins);
-        paidMins.addTextChangedListener(new TextWatcher() {
+        paidMins.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try {
-                    mPaidMins = Integer.parseInt(s.toString());
-                }catch (NumberFormatException c){
-                    mPaidMins = 0;
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Paid Meeting/Travel");
+                minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_PAID_MINUTES);
+                minutesDialog.show(fm,"dialog_paid_minutes");
             }
         });
 
@@ -307,6 +298,8 @@ public class CalculatorFragment extends Fragment{
         outState.putInt("MINUTE", mMinute);
         outState.putBoolean("ISTWENTYFOUR", mIsTwentyFour);
         outState.putInt("TXMINUTES", mTreatmentMins);
+        outState.putInt("PAID_MINS", mPaidMins);
+        outState.putInt("UNPAID_MINS", mUnpaidMins);
 
     }
 
@@ -346,7 +339,7 @@ public class CalculatorFragment extends Fragment{
             SimpleDateFormat df = new SimpleDateFormat("EE, MMM d, yyyy", Locale.US);
             mdateString = df.format(mDate);
             mToolbarDateButton.setText(mdateString);
-        } else if (requestCode == REQUEST_MINUTES) {
+        } else if (requestCode == REQUEST_TX_MINUTES) {
             String strTxMinutes;
             String strHH, strMM, strMM2;
             mTreatmentMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
@@ -374,6 +367,56 @@ public class CalculatorFragment extends Fragment{
             treatmentMinutes.setText(strTxMinutes);
 
         }
+        else if (requestCode == REQUEST_UNPAID_MINUTES) {
+            String strTxMinutes;
+            String strHH, strMM, strMM2;
+            mUnpaidMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+            if(mUnpaidMins == 0){
+                strTxMinutes = "";
+            }
+            else {
+                int hr = mUnpaidMins / 60;
+                int min = mUnpaidMins % 60;
+
+                if(hr == 1) strHH = " hr ";
+                else strHH = " hrs ";
+
+                if(min == 1) strMM = " min";
+                else strMM = " mins";
+
+                if(mUnpaidMins == 1) strMM2 = " min";
+                else strMM2 = " mins";
+
+                strTxMinutes =  hr + strHH
+                        + min + strMM + " (" + mUnpaidMins + strMM2 + ")";
+            }
+            unpaidMins.setText(strTxMinutes);
+        }
+        else if (requestCode == REQUEST_PAID_MINUTES) {
+            String strTxMinutes;
+            String strHH, strMM, strMM2;
+            mPaidMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+            if(mPaidMins == 0){
+                strTxMinutes = "";
+            }
+            else {
+                int hr = mPaidMins / 60;
+                int min = mPaidMins % 60;
+
+                if(hr == 1) strHH = " hr ";
+                else strHH = " hrs ";
+
+                if(min == 1) strMM = " min";
+                else strMM = " mins";
+
+                if(mPaidMins == 1) strMM2 = " min";
+                else strMM2 = " mins";
+
+                strTxMinutes =  hr + strHH
+                        + min + strMM + " (" + mPaidMins + strMM2 + ")";
+            }
+            paidMins.setText(strTxMinutes);
+        }
 }
     @Override
     public void onResume() {
@@ -387,6 +430,20 @@ public class CalculatorFragment extends Fragment{
         mToolbarDateButton.setText(mdateString);
         TimeCardLab timeCardLab = TimeCardLab.get(getContext());
 
+        if(Preferences.getDarkMode(getActivity())){
+            if(isDarkMode == false){
+                isDarkMode = true;
+                getActivity().recreate();
+            }
+
+
+        }
+        else{
+            if(isDarkMode == true){
+                isDarkMode = false;
+                getActivity().recreate();
+            }
+        }
     }
 
 

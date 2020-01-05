@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/colorWgite"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/timeCardToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/toolbarColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/timeCardToolbar"
         app:layout_constraintVertical_bias="0.0">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
@@ -54,7 +55,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/treatment_time_time_card"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textTitleColor"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -66,7 +67,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/start_time"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textTitleColor"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -79,7 +80,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/end_time"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textTitleColor"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +94,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/paid_time"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textTitleColor"
                     android:textSize="18sp" />
 
                 <TextView
@@ -104,7 +105,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/unpaid_break"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textTitleColor"
                     android:textSize="18sp" />
 
                 <TextView
@@ -116,7 +117,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/meeting_travel"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textTitleColor"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -149,10 +150,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab3"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -163,7 +164,7 @@
         android:onClick="sendSms"
         android:tint="@android:color/white"
         android:visibility="invisible"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="?attr/accentColor"
         app:elevation="6dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/fab"
@@ -172,7 +173,7 @@
         app:srcCompat="@drawable/sms_icon_foreground"
         android:layout_marginRight="24dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab2"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -182,7 +183,7 @@
         android:onClick="sendEmail"
         android:tint="@android:color/white"
         android:visibility="invisible"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="?attr/accentColor"
         app:elevation="6dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/fab"
@@ -192,7 +193,7 @@
         app:srcCompat="@android:drawable/ic_dialog_email"
         android:layout_marginRight="24dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab1"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -201,7 +202,7 @@
         android:onClick="setAlarm"
         android:tint="@android:color/white"
         android:visibility="invisible"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="?attr/accentColor"
         app:elevation="6dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/fab"
@@ -211,20 +212,20 @@
         app:srcCompat="@android:drawable/ic_lock_idle_alarm"
         android:layout_marginRight="24dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/colorAccent"
+        android:background="?attr/accentColor"
         android:clickable="true"
 
         android:onClick="openFabMenu"
         android:tint="@android:color/white"
         android:visibility="visible"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="?attr/accentColor"
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:fabSize="normal"
@@ -237,7 +238,7 @@
         android:layout_marginRight="16dp" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

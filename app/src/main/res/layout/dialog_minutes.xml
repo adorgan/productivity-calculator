@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/MyDialogTheme"
+    android:background="?attr/dialog_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +17,6 @@
         android:hint="MM"
         android:inputType="number"
         android:maxLength="2"
-        android:textColor="@color/colorBlack"
         app:layout_constraintBottom_toBottomOf="@+id/editTextDialogHH"
         app:layout_constraintEnd_toStartOf="@+id/textView22"
         app:layout_constraintTop_toTopOf="@+id/editTextDialogHH" />
@@ -65,7 +65,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="or"
-        android:textColor="@color/colorBlack"
+        android:textColor="?attr/textTitleColor"
         app:layout_constraintBottom_toBottomOf="@+id/textView20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,4 +91,4 @@
         app:layout_constraintStart_toStartOf="@+id/editTextDialogHH"
         app:layout_constraintTop_toBottomOf="@+id/editTextDialogHH" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

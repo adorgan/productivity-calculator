@@ -7,9 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
@@ -59,17 +59,24 @@ public class TimePickerDialog extends DialogFragment {
         boolean is24Hour = getArguments().getBoolean(ARG_24HOUR);
 
 
+
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.time_picker_dialog, null);
 
         mTimePicker = v.findViewById(R.id.time_picker);
+        if (Preferences.getDarkMode(getContext())) {
+            mTimePicker.setBackgroundColor(getResources().getColor(R.color.darkGray));
+        }
+
+
+
         setTime(mHour, mMinute);
         if(is24Hour){
             mTimePicker.setIs24HourView(true);
         }else mTimePicker.setIs24HourView(false);
 
 
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(getActivity(), 0)
                 .setView(v)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
