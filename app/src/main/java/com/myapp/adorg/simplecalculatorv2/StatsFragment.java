@@ -75,7 +75,7 @@ public class StatsFragment extends DialogFragment {
         }
 
         hoursWorkedView.setText("Total Paid Time: " +  ((int)paidTimes/60) + " hrs " + ((int)paidTimes%60) + " mins");
-        productivityView.setText("Average Productvity: " + prod + "%");
+        productivityView.setText("Average Productivity: " + prod + "%");
 
         int resId;
 
