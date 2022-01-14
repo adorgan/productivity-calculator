@@ -24,19 +24,20 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:exported="false"
             android:name=".HistoryTimeCardActivity"
             android:label="@string/title_activity_history_time_card"
             android:parentActivityName=".History"/>
         <activity
+            android:exported="false"
             android:name=".History"
             android:label="History"
-
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:label="@string/app_name"
-
+            android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,6 +46,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:exported="false"
             android:name=".TimeCardFragment"
             android:label=""
             android:parentActivityName=".MainActivity">
@@ -53,10 +55,13 @@
                 android:value="com.myapp.adorg.simplecalculatorv2.MainActivity" />
         </activity>
         <activity
+            android:exported="false"
             android:name=".SettingsActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity"/>
-        <activity android:name=".help.HelpViewPager"
+        <activity
+            android:exported="false"
+            android:name=".help.HelpViewPager"
             android:label="Help"
             android:parentActivityName=".MainActivity"/>
     </application>

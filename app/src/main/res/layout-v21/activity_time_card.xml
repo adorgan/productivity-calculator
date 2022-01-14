@@ -152,6 +152,8 @@
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:theme="@style/Theme.MaterialComponents"
+        app:tint="@android:color/white"
         android:id="@+id/fab3"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -162,7 +164,7 @@
         android:onClick="sendSms"
         android:tint="@android:color/white"
         android:visibility="invisible"
-        app:backgroundTint="?attr/accentColor"
+        app:backgroundTint="@color/colorAccent"
         app:elevation="6dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/fab"
@@ -172,6 +174,8 @@
         android:layout_marginRight="24dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:theme="@style/Theme.MaterialComponents"
+        app:tint="@android:color/white"
         android:id="@+id/fab2"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -181,7 +185,7 @@
         android:onClick="sendEmail"
         android:tint="@android:color/white"
         android:visibility="invisible"
-        app:backgroundTint="?attr/accentColor"
+        app:backgroundTint="@color/colorAccent"
         app:elevation="6dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/fab"
@@ -192,6 +196,7 @@
         android:layout_marginRight="24dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:theme="@style/Theme.MaterialComponents"
         android:id="@+id/fab1"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -200,7 +205,8 @@
         android:onClick="setAlarm"
         android:tint="@android:color/white"
         android:visibility="invisible"
-        app:backgroundTint="?attr/accentColor"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
         app:elevation="6dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/fab"
@@ -216,14 +222,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:background="?attr/accentColor"
         android:clickable="true"
         android:elevation="6dp"
-        android:onClick="openFabMenu"
+        android:focusable="true"
+
+        android:theme="@style/Theme.MaterialComponents"
         android:tint="@android:color/white"
         android:visibility="visible"
-        app:backgroundTint="?attr/accentColor"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:fabSize="normal"
@@ -231,9 +241,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="48dp"
         app:srcCompat="@drawable/add_icon_foreground"
-        app:useCompatPadding="false"
-        android:focusable="true"
-        android:layout_marginRight="16dp" />
+        app:useCompatPadding="false" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,7 +114,8 @@ public class TimeCardFragment extends AppCompatActivity{
         txtPaidBreak.setText(meetingStr);
         txtProductivity.setText(prodStr);
 
-
+        FloatingActionButton fabButton = findViewById(fab.getId());
+        fabButton.setOnClickListener(this::openFabMenu);
 
 
     }
