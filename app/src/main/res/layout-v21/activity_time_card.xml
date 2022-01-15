@@ -182,7 +182,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
-        android:onClick="sendEmail"
         android:tint="@android:color/white"
         android:visibility="invisible"
         app:backgroundTint="@color/colorAccent"

@@ -117,6 +117,8 @@ public class TimeCardFragment extends AppCompatActivity{
         FloatingActionButton fabButton = findViewById(fab.getId());
         fabButton.setOnClickListener(this::openFabMenu);
 
+        fab2.setOnClickListener(this::sendEmail);
+
 
     }
 
@@ -204,33 +206,36 @@ public class TimeCardFragment extends AppCompatActivity{
     }
 
 
-
-
-
-
+    /**
+     * Sends an email with the current time card's data via an intent
+     * @param view time card view
+     */
     public void sendEmail(View view) {
 
+        // set email data
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String emailDate = df.format(mTimeCard.getMcardDate());
 
-        String endLine = "Start Time: " + mTimeCard.getStartTime()+
-                "\nEnd Time: " + mTimeCard.getEndTime()+
-                "\nPaid Time: " + mTimeCard.getPaidTime()+
-                "\nUnpaid Time: " + mTimeCard.getUnpaidTime() + " mins"+
-                "\nMeeting/Travel: " + mTimeCard.getTravelTime() + " mins";
+        String body =   "Start Time: "      + mTimeCard.getStartTime() +
+                        "\nEnd Time: "      + mTimeCard.getEndTime() +
+                        "\nPaid Time: "     + mTimeCard.getPaidTime() +
+                        "\nUnpaid Time: "   + mTimeCard.getUnpaidTime() + " mins" +
+                        "\nMeeting/Travel: "+ mTimeCard.getTravelTime() + " mins";
 
+        String uriText =    "mailto:"   + Uri.encode("") +
+                            "?subject=" + Uri.encode("Time Stamp for " + emailDate) +
+                            "&body="    + Uri.encode(body);
 
-        Intent send = new Intent(Intent.ACTION_SENDTO);
-        String uriText = "mailto:" + Uri.encode("") +
-                "?subject=" + Uri.encode("Time Stamp for " + emailDate) + "&body=" + Uri.encode(endLine);
-        Uri uri = Uri.parse(uriText);
+        // send email intent
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse(uriText));
 
-        send.setData(uri);
-        if (send.resolveActivity(getPackageManager()) != null) {
-            startActivity(send);
-
+        // check to make sure they have email app installed
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
 
+        // fold fabs back down
         closeFABMenu();
     }
 

@@ -3,6 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.myapp.adorg.simplecalculatorv2">
 
+    <!--allows email intents-->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent>
+    </queries>
+
+
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <uses-feature
@@ -50,6 +60,7 @@
             android:name=".TimeCardFragment"
             android:label=""
             android:parentActivityName=".MainActivity">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.myapp.adorg.simplecalculatorv2.MainActivity" />
