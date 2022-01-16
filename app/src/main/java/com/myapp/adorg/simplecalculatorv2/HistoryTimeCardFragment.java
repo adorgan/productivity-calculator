@@ -265,8 +265,8 @@ public class HistoryTimeCardFragment extends Fragment{
                 EditMenu.setVisible(false);
                 DeleteMenu.setVisible(false);
                 checkMenu.setVisible(true);
-                fab.animate().translationY(getResources().getDimension(R.dimen.standard_105));
-
+                fab.animate().translationY(getResources().getDimension(R.dimen.standard_120));
+                closeFABMenu();
 
                 return true;
             }
@@ -744,9 +744,9 @@ public class HistoryTimeCardFragment extends Fragment{
             fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_155L));
         }
         else {
-            fab1.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-            fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
-            fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_155));
+            fab1.animate().translationY(-getResources().getDimension(R.dimen.standard_65));
+            fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_120));
+            fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_175));
         }
 
 
