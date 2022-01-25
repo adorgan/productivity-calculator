@@ -39,19 +39,19 @@ public class TimeCardCursorWrapper extends CursorWrapper {
 
 
         TimeCard timeCard = new TimeCard(UUID.fromString(uuidString));
-        timeCard.setmTreatmentTime(treatmentTime);
-        timeCard.setmEndHour(endHour);
-        timeCard.setEndMinute(endMinute);
+        timeCard.setTreatmentTimeString(treatmentTime);
+        timeCard.setEndHourInt(endHour);
+        timeCard.setEndMinuteInt(endMinute);
         timeCard.setDate(date);
         timeCard.setStartTime(startTime);
         timeCard.setEndTime(endTime);
-        timeCard.setProductivity(productivity);
+        timeCard.setProductivityString(productivity);
         timeCard.setPaidTime(paidTime);
         timeCard.setUnpaidTime(unpaidTime);
         timeCard.setTravelTime(meetingTravel);
-        timeCard.setMcardDate(new Date(timeCardDate));
-        timeCard.setmPaidTimeInt(paidTimeInt);
-        timeCard.setmProductivityDouble(productivityInt);
+        timeCard.setTimeCardDate(new Date(timeCardDate));
+        timeCard.setPaidTimeInt(paidTimeInt);
+        timeCard.setProductivityDouble(productivityInt);
         timeCard.setStartHour(startHour);
         timeCard.setStartMinute(startMinute);
         timeCard.setIs24Hour(is24Hour);

@@ -237,7 +237,7 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                 mTimeCard = crime;
                 mDateTextView.setText(mTimeCard.getDate());
                 mStartTimeTextView.setText(mTimeCard.getStartTime() + " - " + mTimeCard.getEndTime());
-                mProductivityTextView.setText(mTimeCard.getProductivity() + "%");
+                mProductivityTextView.setText(mTimeCard.getProductivityString() + "%");
                 mPaidTime.setText(mTimeCard.getPaidTime() + "");
 
             }
@@ -252,7 +252,7 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                     startActivity(intent);
                 }
                 else {
-                    updateShade(mTimeCard.getId(), itemView, mTimeCard, mTimeCard.getmPaidTimeInt(), mTimeCard.getmProductivityDouble());
+                    updateShade(mTimeCard.getId(), itemView, mTimeCard, mTimeCard.getPaidTimeInt(), mTimeCard.getProductivityDouble());
 
                 }
 
@@ -385,8 +385,8 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
             }case R.id.historyMenuEdit:{
 
                 for(int i = 0; i<deletedTimeCards.size(); i++){
-                    double p = Double.parseDouble(deletedTimeCards.get(i).getProductivity());
-                    double h = deletedTimeCards.get(i).getmPaidTimeInt();
+                    double p = Double.parseDouble(deletedTimeCards.get(i).getProductivityString());
+                    double h = deletedTimeCards.get(i).getPaidTimeInt();
                     prodArray.add(p*h);
                     timeWorkedArray.add(h);
                 }

@@ -280,21 +280,21 @@ public class HistoryTimeCardFragment extends Fragment{
                 return true;
 
             }case R.id.menuItemSaved:{
-                mTimeCard.setEndMinute(mMinuteHistory);
-                mTimeCard.setmEndHour(mHourHistory);
+                mTimeCard.setEndMinuteInt(mMinuteHistory);
+                mTimeCard.setEndHourInt(mHourHistory);
                 mTimeCard.setEndTime(endTimeString);
-                mTimeCard.setmProductivityDouble(newProductivity);
-                mTimeCard.setProductivity(newProdString);
+                mTimeCard.setProductivityDouble(newProductivity);
+                mTimeCard.setProductivityString(newProdString);
                 mTimeCard.setPaidTime(newPaidString);
 
                 mTimeCard.setStartHour(startHr);
                 mTimeCard.setStartMinute(startMin);
                 mTimeCard.setStartTime(startTimeString);
-                mTimeCard.setmPaidTimeInt(newPaidTime);
+                mTimeCard.setPaidTimeInt(newPaidTime);
                 mTimeCard.setDate(dateString);
-                mTimeCard.setMcardDate(newDate);
+                mTimeCard.setTimeCardDate(newDate);
                 mTimeCard.setUnpaidTime(Integer.toString((int)newUnpaidTime));
-                mTimeCard.setmTreatmentTime(Integer.toString(newTreatmentMins));
+                mTimeCard.setTreatmentTimeString(Integer.toString(newTreatmentMins));
                 mTimeCard.setTravelTime(Integer.toString((int)newTravelTime));
 
                 setOriginalValues();
@@ -687,8 +687,8 @@ public class HistoryTimeCardFragment extends Fragment{
         String paidStr = "Paid Time: " + mTimeCard.getPaidTime();
         String unpaidStr = mTimeCard.getUnpaidTime() + " mins";
         String meetingStr = mTimeCard.getTravelTime() + " mins";
-        String prodStr = mTimeCard.getProductivity() + "%";
-        String treatTime = mTimeCard.getmTreatmentTime();
+        String prodStr = mTimeCard.getProductivityString() + "%";
+        String treatTime = mTimeCard.getTreatmentTimeString();
 
         if(Integer.parseInt(treatTime) == 0){
             treatStr = "0 mins";
@@ -707,18 +707,18 @@ public class HistoryTimeCardFragment extends Fragment{
         txtUnpaidTime.setText(unpaidStr);
         txtPaidBreak.setText(meetingStr);
         txtProductivity.setText(prodStr);
-        mHourHistory = mTimeCard.getmEndHour();
-        mMinuteHistory = mTimeCard.getmEndMinute();
+        mHourHistory = mTimeCard.getEndHourInt();
+        mMinuteHistory = mTimeCard.getEndMinuteInt();
         startHr = mTimeCard.getStartHour();
         startMin = mTimeCard.getStartMinute();
         startTimeString = mTimeCard.getStartTime();
-        newTreatmentMins = Integer.parseInt(mTimeCard.getmTreatmentTime());
+        newTreatmentMins = Integer.parseInt(mTimeCard.getTreatmentTimeString());
         endTimeString = mTimeCard.getEndTime();
-        newProductivity = mTimeCard.getmProductivityDouble();
+        newProductivity = mTimeCard.getProductivityDouble();
         newPaidString = mTimeCard.getPaidTime();
-        newPaidTime = mTimeCard.getmPaidTimeInt();
-        newProdString = mTimeCard.getProductivity();
-        newDate = mTimeCard.getMcardDate();
+        newPaidTime = mTimeCard.getPaidTimeInt();
+        newProdString = mTimeCard.getProductivityString();
+        newDate = mTimeCard.getTimeCardDate();
         dateString = mTimeCard.getDate();
         txtToolBar.setText(dateString);
         newUnpaidTime = Double.parseDouble(mTimeCard.getUnpaidTime());
@@ -777,7 +777,7 @@ public class HistoryTimeCardFragment extends Fragment{
     private void sendEmail() {
 
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
-        String emailDate = df.format(mTimeCard.getMcardDate());
+        String emailDate = df.format(mTimeCard.getTimeCardDate());
 
         String endLine = "Start Time: " + mTimeCard.getStartTime()+
                 "\nEnd Time: " + mTimeCard.getEndTime()+
@@ -805,7 +805,7 @@ public class HistoryTimeCardFragment extends Fragment{
 
         String endLine;
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
-        String emailDate = df.format(mTimeCard.getMcardDate());
+        String emailDate = df.format(mTimeCard.getTimeCardDate());
 
         endLine = "Time Stamp for " + emailDate +
                 "\nStart Time: " + mTimeCard.getStartTime()+

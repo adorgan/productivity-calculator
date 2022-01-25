@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,8 +82,8 @@ public class TimeCardFragment extends AppCompatActivity{
         String paidStr      = "Paid Time: " + mTimeCard.getPaidTime();
         String unpaidStr    = "Unpaid Time: " + mTimeCard.getUnpaidTime() + " mins";
         String meetingStr   = "Meeting/Travel: " + mTimeCard.getTravelTime() + " mins";
-        String prodStr      = mTimeCard.getProductivity() + "%";
-        String treatTime    = mTimeCard.getmTreatmentTime();
+        String prodStr      = mTimeCard.getProductivityString() + "%";
+        String treatTime    = mTimeCard.getTreatmentTimeString();
 
         String treatStr;
         String strHH, strMM, strMM2;
@@ -112,8 +111,8 @@ public class TimeCardFragment extends AppCompatActivity{
         txtPaidBreak.setText(meetingStr);
         txtProductivity.setText(prodStr);
 
-        endHr = mTimeCard.getmEndHour();
-        endMin = mTimeCard.getmEndMinute();
+        endHr = mTimeCard.getEndHourInt();
+        endMin = mTimeCard.getEndMinuteInt();
 
 
     }
@@ -141,7 +140,7 @@ public class TimeCardFragment extends AppCompatActivity{
         //noinspection SimplifiableIfStatement
         if (id == R.id.timeCardHistory) {
             TimeCardLab timeCardLab  = TimeCardLab.get(getApplicationContext());
-            if(mTimeCard.getmPaidTimeInt()==0){
+            if(mTimeCard.getPaidTimeInt()==0){
                 Toast.makeText(getApplicationContext(), "Unable to save empty time card", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -210,7 +209,7 @@ public class TimeCardFragment extends AppCompatActivity{
 
         // set email data
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
-        String emailDate = df.format(mTimeCard.getMcardDate());
+        String emailDate = df.format(mTimeCard.getTimeCardDate());
 
         String body =   "Start Time: "      + mTimeCard.getStartTime() +
                         "\nEnd Time: "      + mTimeCard.getEndTime() +
@@ -240,7 +239,7 @@ public class TimeCardFragment extends AppCompatActivity{
 
         String endLine;
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
-        String emailDate = df.format(mTimeCard.getMcardDate());
+        String emailDate = df.format(mTimeCard.getTimeCardDate());
 
         endLine = "Time Stamp for " + emailDate +
                 "\nStart Time: " + mTimeCard.getStartTime()+

@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.LayoutInflater;
@@ -227,18 +226,18 @@ public class CalculatorFragment extends Fragment{
                         mTimeCard.setIs24Hour(0);
                     }
                     mTimeCard.setId(UUID.randomUUID());
-                    mTimeCard.setmTreatmentTime(Integer.toString(mTreatmentMins));
-                    mTimeCard.setEndMinute(d.get(Calendar.MINUTE));
-                    mTimeCard.setmEndHour(d.get(Calendar.HOUR_OF_DAY));
-                    mTimeCard.setProductivity(decimalFormat2.format(mProductivity));
+                    mTimeCard.setTreatmentTimeString(Integer.toString(mTreatmentMins));
+                    mTimeCard.setEndMinuteInt(d.get(Calendar.MINUTE));
+                    mTimeCard.setEndHourInt(d.get(Calendar.HOUR_OF_DAY));
+                    mTimeCard.setProductivityString(decimalFormat2.format(mProductivity));
                     mTimeCard.setTravelTime(String.valueOf(mPaidMins));
                     mTimeCard.setUnpaidTime(String.valueOf(mUnpaidMins));
 
                     mTimeCard.setPaidTime(decimalFormat2.format(totalTreatHrs) + strHH + decimalFormat2.format(totalTreatMns) + strMM);
                     mTimeCard.setDate(mdateString);
-                    mTimeCard.setMcardDate(mDate);
-                    mTimeCard.setmProductivityDouble(mProductivity);
-                    mTimeCard.setmPaidTimeInt(totalTreatMins);
+                    mTimeCard.setTimeCardDate(mDate);
+                    mTimeCard.setProductivityDouble(mProductivity);
+                    mTimeCard.setPaidTimeInt(totalTreatMins);
                     mTimeCard.setStartHour(mHour);
                     mTimeCard.setStartMinute(mMinute);
 

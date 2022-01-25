@@ -6,30 +6,33 @@ import java.util.UUID;
 
 public class TimeCard implements Serializable {
     private UUID mId;
-    private String mStartTime;
-    private String mEndTime;
-    private String mPaidTime;
-    private String mUnpaidTime;
-    private String mDate;
-    private Date mcardDate;
-    private String mTravelTime;
-    private String mProductivity;
+    private Date mTimeCardDate;
+    private String mDateString;
+    private String mStartTimeString;
+    private String mEndTimeString;
+    private String mProductivityString;
+    private String mTreatmentTimeString;
+    private String mPaidTimeString;
+    private String mUnpaidTimeString;
+    private String mTravelTimeString;
     private int mEndHour;
     private int mEndMinute;
-    private String mTreatmentTime;
-    private int mPosition;
     private Integer mPaidTimeInt;
     private double mProductivityDouble;
     private int mStartHour;
     private int mStartMinute;
-    private int mIs24Hour;
+    private int mIs24HourMode;
+
+    public TimeCard(UUID id) {
+        mId = id;
+    }
 
     public int getIs24Hour() {
-        return mIs24Hour;
+        return mIs24HourMode;
     }
 
     public void setIs24Hour(int mIs24Hour) {
-        this.mIs24Hour = mIs24Hour;
+        this.mIs24HourMode = mIs24Hour;
     }
 
     public int getStartHour() {
@@ -48,67 +51,54 @@ public class TimeCard implements Serializable {
         this.mStartMinute = mStartMinute;
     }
 
-    public Integer getmPaidTimeInt() {
+    public Integer getPaidTimeInt() {
         return mPaidTimeInt;
     }
 
-    public void setmPaidTimeInt(Integer mPaidTimeInt) {
+    public void setPaidTimeInt(Integer mPaidTimeInt) {
         this.mPaidTimeInt = mPaidTimeInt;
     }
 
-    public double getmProductivityDouble() {
+    public double getProductivityDouble() {
         return mProductivityDouble;
     }
 
-    public void setmProductivityDouble(double mProductivityDouble) {
-        this.mProductivityDouble = mProductivityDouble;
+    public void setProductivityDouble(double val) { this.mProductivityDouble = val; }
+
+    public Date getTimeCardDate() {
+        return mTimeCardDate;
     }
 
-    public Date getMcardDate() {
-        return mcardDate;
+    public void setTimeCardDate(Date date) {
+        this.mTimeCardDate = date;
     }
 
-    public void setMcardDate(Date mcardDate) {
-        this.mcardDate = mcardDate;
-    }
+    public String getTreatmentTimeString() {return mTreatmentTimeString; }
 
-    //public int getmPosition() {
-       // return mPosition;
-   // }
+    public void setTreatmentTimeString(String strTx) { this.mTreatmentTimeString = strTx; }
 
-    //public void setmPosition(int mPosition) {
-      //  this.mPosition = mPosition;
-    //}
-
-    public String getmTreatmentTime() {return mTreatmentTime;
-    }
-
-    public void setmTreatmentTime(String mTreatmentTime) {
-        this.mTreatmentTime = mTreatmentTime;
-    }
-
-    public int getmEndHour() {
+    public int getEndHourInt() {
         return mEndHour;
     }
 
-    public void setmEndHour(int mEndHour) {
+    public void setEndHourInt(int mEndHour) {
         this.mEndHour = mEndHour;
     }
 
-    public int getmEndMinute() {
+    public int getEndMinuteInt() {
         return mEndMinute;
     }
 
-    public void setEndMinute(int mEndMinute) {
+    public void setEndMinuteInt(int mEndMinute) {
         this.mEndMinute = mEndMinute;
     }
 
-    public String getProductivity() {
-        return mProductivity;
+    public String getProductivityString() {
+        return mProductivityString;
     }
 
-    public void setProductivity(String productivity) {
-        mProductivity = productivity;
+    public void setProductivityString(String productivity) {
+        mProductivityString = productivity;
     }
 
     public UUID getId() {
@@ -119,63 +109,53 @@ public class TimeCard implements Serializable {
         mId = id;
     }
 
-     String getStartTime() {
-        return mStartTime;
+    public String getStartTime() {
+        return mStartTimeString;
     }
 
     public void setStartTime(String startTime) {
-        mStartTime = startTime;
+        mStartTimeString = startTime;
     }
 
-     String getEndTime() {
-        return mEndTime;
+    public String getEndTime() {
+        return mEndTimeString;
     }
 
     public void setEndTime(String endTime) {
-        mEndTime = endTime;
+        mEndTimeString = endTime;
     }
 
-     String getPaidTime() {
-        return mPaidTime;
+    public String getPaidTime() {
+        return mPaidTimeString;
     }
 
     public void setPaidTime(String paidTime) {
-        mPaidTime = paidTime;
+        mPaidTimeString = paidTime;
     }
 
-     String getUnpaidTime() {
-        return mUnpaidTime;
+    public String getUnpaidTime() {
+        return mUnpaidTimeString;
     }
 
     public void setUnpaidTime(String unpaidTime) {
-        mUnpaidTime = unpaidTime;
+        mUnpaidTimeString = unpaidTime;
     }
 
-     String getDate() {
-        return mDate;
+    public String getDate() {
+        return mDateString;
     }
 
     public void setDate(String date) {
-        mDate = date;
+        mDateString = date;
     }
 
-     String getTravelTime() {
-        return mTravelTime;
+    public String getTravelTime() {
+        return mTravelTimeString;
     }
 
-    public void setTravelTime(String breakTime) {
-        mTravelTime = breakTime;
+    public void setTravelTime(String travelTime) {
+        mTravelTimeString = travelTime;
     }
-
-    public TimeCard() {
-        this(UUID.randomUUID());
-
-    }
-    public TimeCard(UUID id) {
-        mId = id;
-
-    }
-
 }
 
 
