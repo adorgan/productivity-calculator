@@ -5,6 +5,8 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.provider.AlarmClock;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TimeCardFragment extends AppCompatActivity{
 
@@ -28,8 +31,7 @@ public class TimeCardFragment extends AppCompatActivity{
     private boolean isFABOpen;
     private int endHr, endMin;
     private TimeCard mTimeCard;
-    private int i = 1;
-
+    private int addTimeCardCounter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class TimeCardFragment extends AppCompatActivity{
         setContentView(R.layout.activity_time_card);
 
         if(savedInstanceState != null){
-            i = savedInstanceState.getInt("INT_I");
+            addTimeCardCounter = savedInstanceState.getInt("INT_I");
         }
         mTimeCard = (TimeCard) getIntent().getSerializableExtra("object");
 
@@ -52,7 +54,7 @@ public class TimeCardFragment extends AppCompatActivity{
         Toolbar timeCardToolbar = findViewById(R.id.timeCardToolbar);
         String titleDate = mTimeCard.getDate();
         setSupportActionBar(timeCardToolbar);
-        getSupportActionBar().setTitle(titleDate);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(titleDate);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
@@ -77,13 +79,13 @@ public class TimeCardFragment extends AppCompatActivity{
         TextView txtProductivity = findViewById(R.id.productivityTextView);
 
         // parse time card data
-        String startStr     = "Start Time: " + mTimeCard.getStartTime();
-        String endStr       = "End Time: " + mTimeCard.getEndTime();
-        String paidStr      = "Paid Time: " + mTimeCard.getPaidTime();
-        String unpaidStr    = "Unpaid Time: " + mTimeCard.getUnpaidTime() + " mins";
-        String meetingStr   = "Meeting/Travel: " + mTimeCard.getTravelTime() + " mins";
-        String prodStr      = mTimeCard.getProductivityString() + "%";
-        String treatTime    = mTimeCard.getTreatmentTimeString();
+        String startStr = "Start Time: " + mTimeCard.getStartTime();
+        String endStr = "End Time: " + mTimeCard.getEndTime();
+        String paidStr = "Paid Time: " + mTimeCard.getPaidTime();
+        String unpaidStr = "Unpaid Time: " + mTimeCard.getUnpaidTime() + " mins";
+        String meetingStr = "Meeting/Travel: " + mTimeCard.getTravelTime() + " mins";
+        String prodStr = mTimeCard.getProductivityString() + "%";
+        String treatTime = mTimeCard.getTreatmentTimeString();
 
         String treatStr;
         String strHH, strMM, strMM2;
@@ -102,7 +104,6 @@ public class TimeCardFragment extends AppCompatActivity{
             treatStr = "Treatment: " + hr + strHH + min + strMM + " (" + treatTime + strMM2 + ")";
         }
 
-
         txtTreatmentTime.setText(treatStr);
         startTimeText.setText(startStr);
         endTimeText.setText(endStr);
@@ -113,14 +114,12 @@ public class TimeCardFragment extends AppCompatActivity{
 
         endHr = mTimeCard.getEndHourInt();
         endMin = mTimeCard.getEndMinuteInt();
-
-
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("INT_I", i);
+        outState.putInt("INT_I", addTimeCardCounter);
     }
 
     @Override
@@ -137,32 +136,32 @@ public class TimeCardFragment extends AppCompatActivity{
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.timeCardHistory) {
             TimeCardLab timeCardLab  = TimeCardLab.get(getApplicationContext());
             if(mTimeCard.getPaidTimeInt()==0){
                 Toast.makeText(getApplicationContext(), "Unable to save empty time card", Toast.LENGTH_SHORT).show();
-                return true;
             }
             else {
-                if (i == 1) {
+                // make sure user can't repeatedly save the same time card to the DB
+                if (addTimeCardCounter == 1) {
                     timeCardLab.addTimeCard(mTimeCard);
                 }
                 Toast.makeText(getApplicationContext(), "Time card has been saved to history", Toast.LENGTH_SHORT).show();
-                i++;
-                return true;
+                addTimeCardCounter++;
             }
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * expands fab menu for email/sms/alarm options
+     */
     private void showFABMenu() {
         isFABOpen = true;
         fabAlarm.show();
         fabEmail.show();
         fabSMS.show();
-
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             fabAlarm.animate().translationY(-getResources().getDimension(R.dimen.standard_55L));
@@ -174,9 +173,11 @@ public class TimeCardFragment extends AppCompatActivity{
             fabEmail.animate().translationY(-getResources().getDimension(R.dimen.standard_120));
             fabSMS.animate().translationY(-getResources().getDimension(R.dimen.standard_175));
         }
-
-
     }
+
+    /**
+     * closes fab icons back to original state
+     */
     private void closeFABMenu() {
         isFABOpen = false;
         fabAlarm.animate().translationY(0);
@@ -185,17 +186,17 @@ public class TimeCardFragment extends AppCompatActivity{
         fabAlarm.hide();
         fabEmail.hide();
         fabSMS.hide();
-
-
     }
 
-
+    /**
+     * changes state of fabs
+     * @param view current view
+     */
     public void openFabMenu(View view) {
-
         if (!isFABOpen) {
             showFABMenu();
-
-        } else {
+        }
+        else {
             closeFABMenu();
         }
     }
@@ -206,7 +207,6 @@ public class TimeCardFragment extends AppCompatActivity{
      * @param view time card view
      */
     public void sendEmail(View view) {
-
         // set email data
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String emailDate = df.format(mTimeCard.getTimeCardDate());
@@ -234,9 +234,11 @@ public class TimeCardFragment extends AppCompatActivity{
         closeFABMenu();
     }
 
+    /**
+     * Opens up SMS application for sending time card data
+     * @param view current view
+     */
     public void sendSms(View view) {
-
-
         String endLine;
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String emailDate = df.format(mTimeCard.getTimeCardDate());
@@ -247,8 +249,6 @@ public class TimeCardFragment extends AppCompatActivity{
                 "\nPaid Time: " + mTimeCard.getPaidTime()+
                 "\nUnpaid Time: " + mTimeCard.getUnpaidTime() + " mins"+
                 "\nMeeting/Travel: " + mTimeCard.getTravelTime() + " mins";
-
-
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("smsto:"));  // This ensures only SMS apps respond
@@ -262,6 +262,10 @@ public class TimeCardFragment extends AppCompatActivity{
         closeFABMenu();
     }
 
+    /**
+     * Sets an alarm for the calculated end time
+     * @param view current view
+     */
     public void setAlarm(View view) {
         Intent alarm = new Intent(AlarmClock.ACTION_SET_ALARM);
 
@@ -271,7 +275,4 @@ public class TimeCardFragment extends AppCompatActivity{
 
         closeFABMenu();
     }
-
-
-
 }
