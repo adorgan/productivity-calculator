@@ -15,7 +15,6 @@ import android.view.View;
 
 public class ChangeLog extends DialogFragment {
 
-
     public ChangeLog() {
         // Required empty public constructor
     }
@@ -27,14 +26,7 @@ public class ChangeLog extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Preferences.setChangeLogSeen2(getContext(), true);
-                    }
-                })
+                .setPositiveButton("Got it", (dialog, which) -> Preferences.setChangeLogSeen2(getContext(), true))
                 .create();
     }
-
-
 }
