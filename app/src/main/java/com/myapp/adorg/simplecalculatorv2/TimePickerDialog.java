@@ -15,17 +15,13 @@ import android.view.View;
 import android.widget.TimePicker;
 
 public class TimePickerDialog extends DialogFragment {
+    private TimePicker mTimePicker;
     private static final String ARG_HOUR = "hour";
     private static final String ARG_MINUTE = "minute";
     private static final String ARG_24HOUR = "24Hour";
-
-    public static final String EXTRA_HOUR =
-            "com.adorgan.therapyproductivitycalculator.hour";
-    public static final String EXTRA_MINUTE =
-            "com.adorgan.therapyproductivitycalculator.minute";
-    public static final String EXTRA_ISTWENTYFOUR =
-            "com.adorgan.therapyproductivitycalculator.istwentyfour";
-    private TimePicker mTimePicker;
+    public static final String EXTRA_HOUR = "therapyproductivitycalculator.hour";
+    public static final String EXTRA_MINUTE = "therapyproductivitycalculator.minute";
+    public static final String EXTRA_ISTWENTYFOUR = "therapyproductivitycalculator.istwentyfour";
 
     public static TimePickerDialog newInstance(int hour, int minute, boolean is24Hour) {
         Bundle args = new Bundle();
@@ -37,29 +33,20 @@ public class TimePickerDialog extends DialogFragment {
         return fragment;
     }
 
-
-    private void sendTimeResult(int resultCode, int hour, int minute, boolean isTwentyFour){
-        if(getTargetFragment()==null){
+    private void sendTimeResult(int hour, int minute, boolean isTwentyFour){
+        if (getTargetFragment()==null){
             return;
         }
         Intent intent = new Intent();
         intent.putExtra(EXTRA_HOUR, hour);
         intent.putExtra(EXTRA_MINUTE, minute);
         intent.putExtra(EXTRA_ISTWENTYFOUR, isTwentyFour);
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        final int mHour = getArguments().getInt(ARG_HOUR);
-        final int mMinute = getArguments().getInt(ARG_MINUTE);
-        boolean is24Hour = getArguments().getBoolean(ARG_24HOUR);
-
-
-
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.time_picker_dialog, null);
 
@@ -68,49 +55,43 @@ public class TimePickerDialog extends DialogFragment {
             mTimePicker.setBackgroundColor(getResources().getColor(R.color.darkGray));
         }
 
+        assert getArguments() != null;
+        final int parentHour = getArguments().getInt(ARG_HOUR);
+        final int parentMinute = getArguments().getInt(ARG_MINUTE);
+        boolean is24HourMode = getArguments().getBoolean(ARG_24HOUR);
 
-
-        setTime(mHour, mMinute);
-        if(is24Hour){
-            mTimePicker.setIs24HourView(true);
-        }else mTimePicker.setIs24HourView(false);
-
+        setTime(parentHour, parentMinute, is24HourMode);
 
         return new AlertDialog.Builder(getActivity(), 0)
                 .setView(v)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int hour;
-                        int minute;
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    int newHour;
+                    int newMinute;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        newHour = mTimePicker.getHour();
+                        newMinute = mTimePicker.getMinute();
+                    } else {
+                        newHour = mTimePicker.getCurrentHour() ;
+                        newMinute = mTimePicker.getCurrentMinute();
+                    }
+                    boolean isTwentyFour = mTimePicker.is24HourView();
 
-
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            hour = mTimePicker.getHour();
-                            minute = mTimePicker.getMinute();
-                        } else {
-                            hour = mTimePicker.getCurrentHour() ;
-                            minute = mTimePicker.getCurrentMinute();
-                        }
-                        boolean isTwentyFour = mTimePicker.is24HourView();
-
-                        if(mHour==hour & mMinute == minute)
-                            return;
-                        else sendTimeResult(Activity.RESULT_OK, hour, minute, isTwentyFour);
+                    // don't send time result if nothing changes
+                    if(parentHour != newHour || parentMinute != newMinute){
+                        sendTimeResult(newHour, newMinute, isTwentyFour);
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                })
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
                 .create();
-
-
     }
-    private void setTime(int hour, int minute) {
+
+    /**
+     * set TimePicker time state
+     * @param hour hour value
+     * @param minute minutes value
+     * @param is24HourMode 24 hr clock if true, else AM/PM clock
+     */
+    private void setTime(int hour, int minute, boolean is24HourMode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mTimePicker.setHour(hour);
             mTimePicker.setMinute(minute);
@@ -118,6 +99,7 @@ public class TimePickerDialog extends DialogFragment {
             mTimePicker.setCurrentHour(hour);
             mTimePicker.setCurrentMinute(minute);
         }
+        mTimePicker.setIs24HourView(is24HourMode);
     }
 
 }
