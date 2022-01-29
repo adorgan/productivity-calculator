@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
 
     android:layout_marginRight="20dp"
-    android:background="?attr/colorWgite">
+    android:background="?attr/colorWhite">
 
 </FrameLayout>

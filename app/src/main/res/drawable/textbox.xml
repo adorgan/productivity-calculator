@@ -12,7 +12,7 @@
                 android:topLeftRadius="0dp"
                 android:topRightRadius="0dp">
             </corners>
-            <solid android:color="?attr/colorWgite"/>
+            <solid android:color="?attr/colorWhite"/>
         </shape>
     </item>
 

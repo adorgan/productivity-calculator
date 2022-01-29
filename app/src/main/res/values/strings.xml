@@ -54,5 +54,7 @@
     </string-array>
     
     <string name="dark_mode_key">Dark Mode Key</string>
+    <string name="stats_fragment_hours_worked">Total Paid Time: %1$d hrs %2$d mins</string>
+    <string name="stats_fragment_average_productivity">Average Productivity: %1$s%% </string>
 
 </resources>

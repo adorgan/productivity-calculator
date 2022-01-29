@@ -2,7 +2,6 @@ package com.myapp.adorg.simplecalculatorv2;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -18,13 +17,12 @@ import android.widget.EditText;
 
 public class MinutesDialog extends DialogFragment {
 
-    private EditText editTextMM, editTextHH, editTextMinutes;
-    private String strTitle;
-    private int finalTxInt, finalHH, finalMM;
-
-    boolean blMinutes=false, blHHMM = false;
+    private EditText editTextHH, editTextMM, editTextMinutes;
+    private int finalTxInt;
+    boolean isMinutesOnlyMode; // minutes int format if true, else HH:MM format
     private static final String ARG_DIALOG_TITLE = "dialog_title_Minutes_Dialog";
     public static final String EXTRA_MINUTE = "dialog_extra_minute";
+    public static final String EXTRA_MINUTES_MODE = "dialog_extra_minutes_mode";
 
     public static MinutesDialog newMinutesDialog(String dialogTitle) {
         Bundle args = new Bundle();
@@ -34,146 +32,118 @@ public class MinutesDialog extends DialogFragment {
         return fragment;
     }
 
+    private void sendResult(int totalMinutes, boolean isMinutesOnlyMode) {
+        if (getTargetFragment() == null) {
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_MINUTE, totalMinutes);
+        intent.putExtra(EXTRA_MINUTES_MODE, isMinutesOnlyMode);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_minutes, null);
 
-        strTitle = getArguments().getString(ARG_DIALOG_TITLE, "");
+        assert getArguments() != null;
+        String strTitle = getArguments().getString(ARG_DIALOG_TITLE, "");
         editTextHH = v.findViewById(R.id.editTextDialogHH);
         editTextMM = v.findViewById(R.id.editTextDialogMM);
         editTextMinutes = v.findViewById(R.id.editTextDialogMinutes);
 
-
-
         editTextHH.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                // disable minutes only EditText if HH has characters, otherwise enable
                 if(!s.toString().equals("")) {
                     editTextMinutes.setFocusable(false);
-                    blHHMM = true;
+                    isMinutesOnlyMode = false;
                 }
                 else {
-
                     if(editTextMM.getText().toString().equals("")){
                         editTextMinutes.setFocusable(true);
                         editTextMinutes.setFocusableInTouchMode(true);
-                        blHHMM = false;
+                        isMinutesOnlyMode = true;
                     }
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
         editTextMM.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().equals("")) {
                     editTextMinutes.setFocusable(false);
-                    blHHMM = true;
+                    isMinutesOnlyMode = false;
                 }
                 else {
                     if(editTextHH.getText().toString().equals("")){
                         editTextMinutes.setFocusable(true);
                         editTextMinutes.setFocusableInTouchMode(true);
-                        blHHMM = false;
+                        isMinutesOnlyMode = true;
                     }
-
-
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
         editTextMinutes.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().equals("")) {
                     editTextHH.setFocusable(false);
                     editTextMM.setFocusable(false);
-                    blMinutes = true;
+                    isMinutesOnlyMode = true;
                 }
                 else {
                     editTextHH.setFocusable(true);
                     editTextHH.setFocusableInTouchMode(true);
                     editTextMM.setFocusable(true);
                     editTextMM.setFocusableInTouchMode(true);
-                    blMinutes = false;
+                    isMinutesOnlyMode = false;
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
 
-
-        return new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme)
+        return new AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme)
                 .setView(v)
                 .setTitle(strTitle)
                 .setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                if(blMinutes){
-                                    if(editTextMinutes.getText().toString().equals(""))
-                                        finalTxInt = 0;
-                                    else finalTxInt = Integer.parseInt(editTextMinutes.getText().toString());
-                                }else if(blHHMM) {
-                                    if(editTextHH.getText().toString().equals("")&editTextMM.getText().toString().equals("")){
-                                        finalTxInt = 0;
-                                    }else if(editTextHH.getText().toString().equals("") & !editTextMM.getText().toString().equals("")){
-                                        finalTxInt = Integer.parseInt(editTextMM.getText().toString());
-                                    }else if(!editTextHH.getText().toString().equals("") & editTextMM.getText().toString().equals("")) {
-                                        finalTxInt = Integer.parseInt(editTextHH.getText().toString()) * 60;
-                                    }else finalTxInt = (Integer.parseInt(editTextHH.getText().toString()) * 60) + Integer.parseInt(editTextMM.getText().toString());
-                                }
-
-                                sendResult(Activity.RESULT_OK, finalTxInt);
+                        (dialog, which) -> {
+                            if (isMinutesOnlyMode){
+                                if(editTextMinutes.getText().toString().equals(""))
+                                    finalTxInt = 0;
+                                else finalTxInt = Integer.parseInt(editTextMinutes.getText().toString());
+                            }else {
+                                if(editTextHH.getText().toString().equals("")&editTextMM.getText().toString().equals("")){
+                                    finalTxInt = 0;
+                                }else if(editTextHH.getText().toString().equals("") & !editTextMM.getText().toString().equals("")){
+                                    finalTxInt = Integer.parseInt(editTextMM.getText().toString());
+                                }else if(!editTextHH.getText().toString().equals("") & editTextMM.getText().toString().equals("")) {
+                                    finalTxInt = Integer.parseInt(editTextHH.getText().toString()) * 60;
+                                }else finalTxInt = (Integer.parseInt(editTextHH.getText().toString()) * 60) + Integer.parseInt(editTextMM.getText().toString());
                             }
+                            sendResult(finalTxInt, isMinutesOnlyMode);
                         })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                })
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
                 .create();
-    }
-    private void sendResult(int resultCode, int txMins) {
-        if (getTargetFragment() == null) {
-            return;
-        }
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_MINUTE, txMins);
-        getTargetFragment()
-                .onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 }

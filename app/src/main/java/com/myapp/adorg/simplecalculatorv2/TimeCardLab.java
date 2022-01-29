@@ -16,15 +16,13 @@ import java.util.UUID;
 
 public class TimeCardLab {
     private static TimeCardLab sTimeCardLab;
-    private SQLiteDatabase mDatabase;
-
+    private final SQLiteDatabase mDatabase;
 
     public static TimeCardLab get(Context context){
         if(sTimeCardLab == null){
             sTimeCardLab = new TimeCardLab(context);
         }return sTimeCardLab;
     }
-
 
     private TimeCardLab(Context context){
         Context mContext = context.getApplicationContext();
@@ -75,49 +73,43 @@ public class TimeCardLab {
      List<TimeCard> getTimeCards() {
         List<TimeCard> timeCards = new ArrayList<>();
 
-        TimeCardCursorWrapper cursor = queryCrimes(null, null);
-        try {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                timeCards.add(cursor.getTimeCard());
-                cursor.moveToNext();
-            }
-        } finally {
-            cursor.close();
-        }
+         try (TimeCardCursorWrapper cursor = queryCrimes(null, null)) {
+             cursor.moveToFirst();
+             while (!cursor.isAfterLast()) {
+                 timeCards.add(cursor.getTimeCard());
+                 cursor.moveToNext();
+             }
+         }
         return timeCards;
     }
     public TimeCard getTimeCard(UUID uuid) {
 
-        TimeCardCursorWrapper cursor = queryCrimes(TimeCardDbSchema.TimeCardTable.Cols.UUID + " = ?",
-                new String[] { uuid.toString() }
-        );
-        try {
+        try (TimeCardCursorWrapper cursor = queryCrimes(TimeCardDbSchema.TimeCardTable.Cols.UUID + " = ?",
+                new String[]{uuid.toString()}
+        )) {
             if (cursor.getCount() == 0) {
                 return null;
             }
             cursor.moveToFirst();
             return cursor.getTimeCard();
-        } finally {
-            cursor.close();
         }
-
     }
 
-
-
-     void deleteAll()
-    {
-
+     void deleteAll() {
         mDatabase.execSQL("delete from "+ TimeCardDbSchema.TimeCardTable.NAME);
-
     }
 
     void searchAndDelete(UUID uuid){
-
-        mDatabase.execSQL("DELETE FROM " + TimeCardDbSchema.TimeCardTable.NAME + " WHERE " + TimeCardDbSchema.TimeCardTable.Cols.UUID + "= '" + uuid + "'");
-
+        mDatabase.execSQL("DELETE FROM "
+                + TimeCardDbSchema.TimeCardTable.NAME
+                + " WHERE "
+                + TimeCardDbSchema.TimeCardTable.Cols.UUID
+                + "= '"
+                + uuid
+                + "'");
     }
+
+
     public void updateTimeCardDB(TimeCard timeCard) {
         String uuidString = timeCard.getId().toString();
         ContentValues values = getContentValues(timeCard);
@@ -125,6 +117,4 @@ public class TimeCardLab {
                 TimeCardDbSchema.TimeCardTable.Cols.UUID + " = ?",
                 new String[] { uuidString });
     }
-
-
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Theme.AppCompat.Light.DarkActionBar"
     android:layout_width="match_parent"
-    android:background="?attr/colorWgite"
+    android:background="?attr/colorWhite"
     android:tag="history_fragment"
     android:layout_height="match_parent">
 

@@ -66,8 +66,10 @@ public class StatsFragment extends DialogFragment {
             } else averageProductivity = decimalFormat.format(averageProd);
         }
 
-        hoursWorkedView.setText("Total Paid Time: " +  ((int) paidTimes /60) + " hrs " + ((int) paidTimes %60) + " mins");
-        productivityView.setText("Average Productivity: " + averageProductivity + "%");
+        hoursWorkedView.setText(getString(R.string.stats_fragment_hours_worked,
+                (int) paidTimes/60, (int) paidTimes%60));
+        productivityView.setText(getString(R.string.stats_fragment_average_productivity,
+                averageProductivity));
 
         int resId;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
