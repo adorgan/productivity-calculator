@@ -202,7 +202,7 @@
         android:layout_marginRight="24dp"
         android:onClick="setAlarm"
         android:theme="@style/Theme.MaterialComponents"
-        android:tint="@color/colorWgite"
+        android:tint="@color/colorWhite"
         android:visibility="invisible"
         app:backgroundTint="@color/colorAccent"
         app:elevation="6dp"
@@ -226,7 +226,7 @@
 
         android:focusable="true"
         android:theme="@style/Theme.MaterialComponents"
-        android:tint="@color/colorWgite"
+        android:tint="@color/colorWhite"
         android:visibility="visible"
         app:backgroundTint="@color/colorAccent"
         app:borderWidth="0dp"

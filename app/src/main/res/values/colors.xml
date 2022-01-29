@@ -3,7 +3,7 @@
     <color name="colorPrimary">#1565C0</color>
     <color name="colorPrimaryDark">#125297</color>
     <color name="colorAccent">#FF5010</color>
-    <color name="colorWgite">#FFFFFF</color>
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="highlighted">#BBDEFB</color>
     <color name="darkGray">#242424</color>

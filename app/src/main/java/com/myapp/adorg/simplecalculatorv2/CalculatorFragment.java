@@ -385,7 +385,7 @@ public class CalculatorFragment extends Fragment{
         mToolbarDateButton.setText(mDateString);
 
         // sets up db tables **IMPORTANT
-        TimeCardLab.get(getContext());
+        TimeCardLab timeCard = TimeCardLab.get(getContext());
 
         if(Preferences.getDarkMode(getActivity())){
             if(!isDarkMode){

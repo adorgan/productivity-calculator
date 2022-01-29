@@ -264,7 +264,7 @@
         android:paddingRight="24dp"
         android:text="@string/calculate_time_stamp"
         android:textAppearance="@style/TextAppearance.AppCompat"
-        android:textColor="@color/colorWgite"
+        android:textColor="@color/colorWhite"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

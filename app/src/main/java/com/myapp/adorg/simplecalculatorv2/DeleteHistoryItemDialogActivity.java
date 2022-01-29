@@ -3,7 +3,6 @@ package com.myapp.adorg.simplecalculatorv2;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -21,7 +20,6 @@ public class DeleteHistoryItemDialogActivity extends DialogFragment {
         // Required empty public constructor
     }
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -29,7 +27,6 @@ public class DeleteHistoryItemDialogActivity extends DialogFragment {
                 .inflate(R.layout.delete_history_item_dialog_history, null);
 
         int resId;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             resId = R.style.MyDialogTheme;
         } else {
@@ -38,22 +35,12 @@ public class DeleteHistoryItemDialogActivity extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity(), resId)
                 .setView(v)
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.isDeleted(true);
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                })
+                .setPositiveButton("Delete", (dialog, which) -> mListener.isDeleted(true))
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
                 .create();
     }
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof ClearFragment.OnFragmentInteractionListener) {
             mListener = (DeleteHistoryItemDialogActivity.OnFragmentInteractionListener) context;
@@ -70,7 +57,6 @@ public class DeleteHistoryItemDialogActivity extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        //
         void isDeleted(boolean cleared);
     }
 }

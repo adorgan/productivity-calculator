@@ -1,5 +1,6 @@
 package com.myapp.adorg.simplecalculatorv2;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -37,7 +39,7 @@ public class HistoryTimeCardFragment extends Fragment{
     private TimeCard mTimeCard;
     private TextView endTimeText, startTimeText, paidTime, txtUnpaidTime, txtPaidBreak, txtProductivity, txtTreatmentTime, txtToolBar;
     private int  startHr, startMin;
-    private UUID crimeId;
+    private UUID timeCardID;
     private static final int REQUEST_DELETED = 3;
     private boolean isEdited = false;
     private Toolbar toolbar;
@@ -57,22 +59,21 @@ public class HistoryTimeCardFragment extends Fragment{
     private static final int REQUEST_PRODUCTVITY = 10;
     private static final String DIALOG_PRODUCTIVITY = "history_productivity";
     private String newPaidString,treatStr;
-    private boolean mIsTwentyFourHistory;
     private int mMinuteHistory, mHourHistory;
     private SimpleDateFormat df;
-    private Calendar c = Calendar.getInstance();
+    private final Calendar c = Calendar.getInstance();
     private double newProductivity;
     private String newProdString;
-    private boolean savedIs24Hour;
+    private boolean is24HourMode;
     private String startTimeString, endTimeString, dateString;
     private int newPaidTime, newTreatmentMins;
     private Date newDate;
     private boolean dateChanged = false;
     private double newUnpaidTime, newTravelTime;
-    private String newUnpaidString, newTravelString;
+    private String newUnpaidString;
     private double endHourTotal;
-    private FloatingActionButton fab, fab1, fab2, fab3;
-    private boolean isFABOpen;
+    private FloatingActionButton fab, fabAlarm, fabEmail, fabSms;
+    private boolean isFabMenuOpen;
 
 
 
@@ -94,8 +95,8 @@ public class HistoryTimeCardFragment extends Fragment{
         setHasOptionsMenu(true);
         if (getArguments() != null) {
 
-            crimeId = (UUID) getArguments().getSerializable(ARG_HISTORY_TIME_CARD_ID);
-            mTimeCard = TimeCardLab.get(getActivity()).getTimeCard(crimeId);
+            timeCardID = (UUID) getArguments().getSerializable(ARG_HISTORY_TIME_CARD_ID);
+            mTimeCard = TimeCardLab.get(getActivity()).getTimeCard(timeCardID);
 
         }
     }
@@ -104,127 +105,105 @@ public class HistoryTimeCardFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_history_time_card, container, false);
-        fab = v.findViewById(R.id.fabHistoryTC);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFabMenu();
-            }
-        });
-        fab1 = v.findViewById(R.id.fab1HistoryTC);
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setAlarm();
-            }
-        });
-        fab2 = v.findViewById(R.id.fab2HistoryTC);
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendEmail();
-            }
-        });
-        fab3 = v.findViewById(R.id.fab3HistoryTC);
-        fab3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendSms();
-            }
-        });
+
+        // set up tool bar
         toolbar = v.findViewById(R.id.historyTimeCardToolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(null);
-        ActionBar ab = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(null);
+        ActionBar ab = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+        assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
+
         txtToolBar = v.findViewById(R.id.historyTimeCardToolBarText);
-
-        txtToolBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(newDate);
-                datePickerDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_DATE );
-                datePickerDialog.show(fm, DIALOG_DATE);
-            }
+        txtToolBar.setOnClickListener(v15 -> {
+            FragmentManager fm = getParentFragmentManager();
+            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(newDate);
+            datePickerDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_DATE );
+            datePickerDialog.show(fm, DIALOG_DATE);
         });
 
+        // set up fabs
+        fab = v.findViewById(R.id.fabHistoryTC);
+        fab.setOnClickListener(v1 -> toggleFabMenu());
+
+        fabAlarm = v.findViewById(R.id.fab1HistoryTC);
+        fabAlarm.setOnClickListener(v12 -> setAlarm());
+
+        fabEmail = v.findViewById(R.id.fab2HistoryTC);
+        fabEmail.setOnClickListener(v13 -> sendEmail());
+
+        fabSms = v.findViewById(R.id.fab3HistoryTC);
+        fabSms.setOnClickListener(v14 -> sendSms());
+
+        is24HourMode = mTimeCard.getIs24Hour() != 0;
+
+        // allow user to edit start time
         startTimeText = v.findViewById(R.id.startTimeHistoryTC);
-        savedIs24Hour = mTimeCard.getIs24Hour() != 0;
-
-
-        startTimeText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(startHr, startMin, savedIs24Hour);
-                timePickerDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_START_TIME);
-                timePickerDialog.show(fm,DIALOG_START_TIME);
-            }
+        startTimeText.setOnClickListener(v16 -> {
+            FragmentManager fm = getParentFragmentManager();
+            TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(startHr, startMin, is24HourMode);
+            timePickerDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_START_TIME);
+            timePickerDialog.show(fm,DIALOG_START_TIME);
         });
 
+        // allow user to edit end time
         endTimeText = v.findViewById(R.id.EndTimeHistoryTC);
-        endTimeText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(mHourHistory, mMinuteHistory, savedIs24Hour);
-                timePickerDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TIME_HISTORY);
-                timePickerDialog.show(fm,DIALOG_END_TIME_HISTORY);
-            }
+        endTimeText.setOnClickListener(v17 -> {
+            FragmentManager fm = getParentFragmentManager();
+            TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(mHourHistory, mMinuteHistory, is24HourMode);
+            timePickerDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TIME_HISTORY);
+            timePickerDialog.show(fm,DIALOG_END_TIME_HISTORY);
         });
+
+        // allow user to edit tx time
+        txtTreatmentTime = v.findViewById(R.id.treatmentTimeHistoryTC);
+        txtTreatmentTime.setOnClickListener(v18 -> {
+            FragmentManager fm = getParentFragmentManager();
+            MinutesDialog changeNumberDialog = MinutesDialog.newMinutesDialog("Enter New Treatment Amount");
+            changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TREAT_MINS );
+            changeNumberDialog.show(fm, DIALOG_TREAT_MINS);
+        });
+
+        // allow user to edit unpaid time
+        txtUnpaidTime = v.findViewById(R.id.unPaidTimeHistory);
+        txtUnpaidTime.setOnClickListener(v19 -> {
+            FragmentManager fm = getParentFragmentManager();
+            ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance("New Unpaid Time", (int)newUnpaidTime, endHourTotal);
+            changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_UNPAID);
+            changeNumberDialog.show(fm, DIALOG_UNPAID);
+
+        });
+
+        // allow user to edit paid time
+        paidTime = v.findViewById(R.id.PaidTimeHistoryTC);
+        txtPaidBreak = v.findViewById(R.id.txtPaidBreakHistoryTC);
+        txtPaidBreak.setOnClickListener(v110 -> {
+            FragmentManager fm = getParentFragmentManager();
+            ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance("New Paid Time", (int)newTravelTime, endHourTotal);
+            changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TRAVEL);
+            changeNumberDialog.show(fm, DIALOG_TRAVEL);
+        });
+
+        // allow user to edit productivity
+        txtProductivity = v.findViewById(R.id.productivityTextViewHistoryTC);
+        txtProductivity.setOnClickListener(v111 -> {
+            FragmentManager fm = getParentFragmentManager();
+            ProductivityPicker productivityPicker = ProductivityPicker.newInstance(newProductivity);
+            productivityPicker.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_PRODUCTVITY);
+            productivityPicker.show(fm, DIALOG_PRODUCTIVITY);
+        });
+
+        // set all values clickable before user clicks edit icon and enters edit mode
         endTimeText.setClickable(false);
         startTimeText.setClickable(false);
         txtToolBar.setClickable(false);
-        txtTreatmentTime = v.findViewById(R.id.treatmentTimeHistoryTC);
-        txtTreatmentTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                MinutesDialog changeNumberDialog = MinutesDialog.newMinutesDialog("Enter New Treatment Amount");
-                changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TREAT_MINS );
-                changeNumberDialog.show(fm, DIALOG_TREAT_MINS);
-            }
-        });
-        txtTreatmentTime.setClickable(false);
-        txtUnpaidTime = v.findViewById(R.id.unPaidTimeHistory);
-        txtUnpaidTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance("New Unpaid Time", (int)newUnpaidTime, endHourTotal);
-                changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_UNPAID);
-                changeNumberDialog.show(fm, DIALOG_UNPAID);
-
-            }
-        });
-        txtUnpaidTime.setClickable(false);
-        paidTime = v.findViewById(R.id.PaidTimeHistoryTC);
-        txtPaidBreak = v.findViewById(R.id.txtPaidBreakHistoryTC);
-        txtPaidBreak.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                ChangeNumberDialog changeNumberDialog = ChangeNumberDialog.newInstance("New Paid Time", (int)newTravelTime, endHourTotal);
-                changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TRAVEL);
-                changeNumberDialog.show(fm, DIALOG_TRAVEL);
-            }
-        });
-        txtPaidBreak.setClickable(false);
-        txtProductivity = v.findViewById(R.id.productivityTextViewHistoryTC);
-        txtProductivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                ProductivityPicker productivityPicker = ProductivityPicker.newInstance(newProductivity);
-                productivityPicker.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_PRODUCTVITY);
-                productivityPicker.show(fm, DIALOG_PRODUCTIVITY);
-            }
-        });
         txtProductivity.setClickable(false);
+        txtPaidBreak.setClickable(false);
+        txtUnpaidTime.setClickable(false);
+        txtTreatmentTime.setClickable(false);
 
-
-        setOriginalValues();
+        // set up state of all data values
+        setTimeCardState();
 
         return v;
     }
@@ -239,13 +218,12 @@ public class HistoryTimeCardFragment extends Fragment{
         EditMenu = menu.findItem(R.id.historyMenuEdit);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.deleteHistoryItem: {
-
-
-                FragmentManager fm = getFragmentManager();
+                FragmentManager fm = getParentFragmentManager();
                 DeleteHistoryItemDialog dialog = DeleteHistoryItemDialog.newInstance();
                 dialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_DELETED);
                 dialog.show(fm, "DIALOG_DELETED");
@@ -266,16 +244,15 @@ public class HistoryTimeCardFragment extends Fragment{
                 DeleteMenu.setVisible(false);
                 checkMenu.setVisible(true);
                 fab.animate().translationY(getResources().getDimension(R.dimen.standard_120));
-                closeFABMenu();
+                closeFabMenu();
 
                 return true;
             }
             case android.R.id.home: {
-
-                if(!isEdited) getActivity().onBackPressed();
+                if(!isEdited) requireActivity().onBackPressed();
                 else{
                     returnFromEdit();
-                    setOriginalValues();
+                    setTimeCardState();
                 }
                 return true;
 
@@ -286,7 +263,6 @@ public class HistoryTimeCardFragment extends Fragment{
                 mTimeCard.setProductivityDouble(newProductivity);
                 mTimeCard.setProductivityString(newProdString);
                 mTimeCard.setPaidTime(newPaidString);
-
                 mTimeCard.setStartHour(startHr);
                 mTimeCard.setStartMinute(startMin);
                 mTimeCard.setStartTime(startTimeString);
@@ -296,30 +272,40 @@ public class HistoryTimeCardFragment extends Fragment{
                 mTimeCard.setUnpaidTime(Integer.toString((int)newUnpaidTime));
                 mTimeCard.setTreatmentTimeString(Integer.toString(newTreatmentMins));
                 mTimeCard.setTravelTime(Integer.toString((int)newTravelTime));
-
-                setOriginalValues();
+                setTimeCardState();
                 returnFromEdit();
                 if(dateChanged) Preferences.setDateChange(getContext(), true);
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void setClickable(TextView txtview){
-        txtview.setClickable(true);
-        txtview.setTextColor(getResources().getColor(R.color.colorPrimary));
+    /**
+     * turns a read only textview into a clickable one to be edited
+     * @param textView textView to be changed
+     */
+    private void setClickable(TextView textView){
+        textView.setClickable(true);
+        textView.setTextColor(getResources().getColor(R.color.colorPrimary));
     }
-    private void setUnClickable(TextView txtview){
-        txtview.setClickable(false);
-        if(Preferences.getDarkMode(getContext())){
-            txtview.setTextColor(getResources().getColor(R.color.colorWgite));
+
+    /**
+     * turns a clickable textview into a read only textview
+     * @param textView textview to be changed
+     */
+    private void setUnClickable(TextView textView){
+        textView.setClickable(false);
+        if (Preferences.getDarkMode(getContext())){
+            textView.setTextColor(getResources().getColor(R.color.colorWhite));
         }
         else{
-            txtview.setTextColor(getResources().getColor(R.color.colorBlack));
+            textView.setTextColor(getResources().getColor(R.color.colorBlack));
         }
-
     }
+
+    /**
+     * Returns the time card to read only.
+     */
     private void returnFromEdit(){
         setUnClickable(startTimeText);
         setUnClickable(endTimeText);
@@ -328,14 +314,13 @@ public class HistoryTimeCardFragment extends Fragment{
         setUnClickable(txtPaidBreak);
         setUnClickable(txtProductivity);
         txtToolBar.setClickable(false);
-        txtToolBar.setTextColor(getResources().getColor(R.color.colorWgite));
+        txtToolBar.setTextColor(getResources().getColor(R.color.colorWhite));
         isEdited=false;
         toolbar.setNavigationIcon(R.drawable.arrow_back);
         EditMenu.setVisible(true);
         DeleteMenu.setVisible(true);
         checkMenu.setVisible(false);
         fab.animate().translationY(0);
-
     }
 
     @Override
@@ -344,37 +329,49 @@ public class HistoryTimeCardFragment extends Fragment{
             return;
         }
         else if (requestCode == REQUEST_DELETED){
+            // user wishes to delete selected time card from history
             boolean cleared = data.getBooleanExtra(DeleteHistoryItemDialog.EXTRA_DELETED, false);
             if(cleared) {
                 TimeCardLab timeCardLab = TimeCardLab.get(getContext());
-                timeCardLab.searchAndDelete(crimeId);
+                timeCardLab.searchAndDelete(timeCardID);
                 Preferences.setPrefDelete(getContext(), true);
-                getActivity().onBackPressed();
+                requireActivity().onBackPressed();
             }
-        } else if (requestCode == REQUEST_TIME_HISTORY) {
-            mIsTwentyFourHistory = data.getBooleanExtra(TimePickerDialog.EXTRA_ISTWENTYFOUR, false);
-            double testendHourTotal = (data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_HOUR, 0)*60) + data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_MINUTE, 0);
-            double startHourTotal = (startHr*60) + startMin;
+        }
+        else if (requestCode == REQUEST_TIME_HISTORY) {
+            // user changes the end time of their shift
+            is24HourMode = data.getBooleanExtra(TimePickerDialog.EXTRA_ISTWENTYFOUR, false);
+            double endTimeTotalMinutes = (data.getIntExtra(TimePickerDialog.EXTRA_HOUR, 0)*60)
+                    + data.getIntExtra(TimePickerDialog.EXTRA_MINUTE, 0);
+            double startTimeTotal = (startHr*60) + startMin;
+
+            // calculate difference between start and stop time
             double difference;
-            if (testendHourTotal > startHourTotal)
-                difference = (testendHourTotal - startHourTotal) - newUnpaidTime - newTravelTime;
-            else if (startHourTotal > testendHourTotal)
-                difference = 1440 - ((startHourTotal - testendHourTotal) + newUnpaidTime + newTravelTime);
+            if (endTimeTotalMinutes > startTimeTotal)
+                difference = (endTimeTotalMinutes - startTimeTotal) - newUnpaidTime - newTravelTime;
+            else if (startTimeTotal > endTimeTotalMinutes)
+                difference = 1440 - ((startTimeTotal - endTimeTotalMinutes) + newUnpaidTime + newTravelTime);
             else difference = 0;
 
+            // make sure shift time can't get too small
             if((difference-newUnpaidTime)<=0){
                 Toast.makeText(getContext(), "End time error", Toast.LENGTH_LONG).show();
             }
             else {
-                mHourHistory = data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_HOUR, 0);
-                mMinuteHistory = data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_MINUTE, 0);
+                mHourHistory = data.getIntExtra(TimePickerDialog.EXTRA_HOUR, 0);
+                mMinuteHistory = data.getIntExtra(TimePickerDialog.EXTRA_MINUTE, 0);
                 reCalculateEndTime();
             }
 
-        } else if (requestCode == REQUEST_START_TIME) {
-            mIsTwentyFourHistory = data.getBooleanExtra(TimePickerDialog.EXTRA_ISTWENTYFOUR, false);
-            double startHourTotal = (data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_HOUR, 0)*60) + data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_MINUTE, 0);
+        }
+        else if (requestCode == REQUEST_START_TIME) {
+            // user changes shift start time
+            is24HourMode = data.getBooleanExtra(TimePickerDialog.EXTRA_ISTWENTYFOUR, false);
+            double startHourTotal = (data.getIntExtra(TimePickerDialog.EXTRA_HOUR, 0)*60)
+                    + data.getIntExtra(TimePickerDialog.EXTRA_MINUTE, 0);
             endHourTotal = (mHourHistory*60) + mMinuteHistory;
+
+            // make sure start time is not set too late to interfere with stop time
             double difference;
             if (endHourTotal > startHourTotal)
                 difference = (endHourTotal - startHourTotal) - newUnpaidTime - newTravelTime;
@@ -390,7 +387,9 @@ public class HistoryTimeCardFragment extends Fragment{
                 startMin = data.getIntExtra(com.myapp.adorg.simplecalculatorv2.TimePickerDialog.EXTRA_MINUTE, 0);
                 reCalculateStartTime();
             }
-        } else if (requestCode == REQUEST_DATE) {
+        }
+        else if (requestCode == REQUEST_DATE) {
+            // user changes date
             newDate = (Date) data
                     .getSerializableExtra(DatePickerDialog.EXTRA_DATE);
             SimpleDateFormat df = new SimpleDateFormat("EE, MMM d, yyyy", Locale.US);
@@ -399,17 +398,18 @@ public class HistoryTimeCardFragment extends Fragment{
             dateChanged = true;
         }
         else if(requestCode == REQUEST_TREAT_MINS){
-
+            // user changes treatment minutes but can't set tx mins to zero
             if(data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0)==0)
                 Toast.makeText(getContext(), "Unable to calculate", Toast.LENGTH_LONG).show();
             else {
                 newTreatmentMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
-
                 treatStr = (newTreatmentMins / 60) + " hrs " + (newTreatmentMins % 60) + " mins (" + newTreatmentMins + " mins)";
                 txtTreatmentTime.setText(treatStr);
                 reCalculateTreatTime();
             }
-        } else if (requestCode == REQUEST_UNPAID) {
+        }
+        else if (requestCode == REQUEST_UNPAID) {
+            // user changes unpaid minutes
             if(newPaidTime + data.getIntExtra(ChangeNumberDialog.EXTRA_Minutes, 0)>= 1440){
                 Toast.makeText(getContext(), "Unable to calculate more than 24 hours worked", Toast.LENGTH_LONG).show();
             }
@@ -443,12 +443,7 @@ public class HistoryTimeCardFragment extends Fragment{
                 reCalculateProductivity();
             } else
                 Toast.makeText(getContext(), "Unable to calculate more than 24 hours worked", Toast.LENGTH_LONG).show();
-
-
         }
-
-
-
     }
 
     private void reCalculateProductivity() {
@@ -477,7 +472,7 @@ public class HistoryTimeCardFragment extends Fragment{
 
         if ((totalTreatMins + newUnpaidTime) < 1440) {
 
-            if (!mIsTwentyFourHistory) {
+            if (!is24HourMode) {
                 df = new SimpleDateFormat("h:mm a");
                 endTimeString = df.format(c.getTime());
                 endTimeText.setText(endTimeString);
@@ -512,7 +507,7 @@ public class HistoryTimeCardFragment extends Fragment{
         }
 
         else {
-            if (!mIsTwentyFourHistory) {
+            if (!is24HourMode) {
                 df = new SimpleDateFormat("h:mm a");
                 c.set(0, 0, 0, mHourHistory, mMinuteHistory);
             } else {
@@ -522,7 +517,7 @@ public class HistoryTimeCardFragment extends Fragment{
             endTimeString = df.format(c.getTime());
             endTimeText.setText(endTimeString);
 
-            newProductivity = round(((treatmentMins / difference) * 100), 1);
+            newProductivity = round(((treatmentMins / difference) * 100));
             NumberFormat decimalFormat = new DecimalFormat("#0.0");
             NumberFormat noDecimal = new DecimalFormat("#0");
             if (decimalFormat.format(newProductivity).endsWith(".0")) {
@@ -553,7 +548,7 @@ public class HistoryTimeCardFragment extends Fragment{
         mHourHistory = (int)endHourTotal/60;
         mMinuteHistory = (int)endHourTotal%60;
 
-        if (!mIsTwentyFourHistory) {
+        if (!is24HourMode) {
             df = new SimpleDateFormat("h:mm a");
             c.set(0, 0, 0, mHourHistory, mMinuteHistory);
         } else {
@@ -594,7 +589,7 @@ public class HistoryTimeCardFragment extends Fragment{
 
         else {
 
-            if (!mIsTwentyFourHistory) {
+            if (!is24HourMode) {
                 df = new SimpleDateFormat("h:mm a");
                 c.set(0, 0, 0, startHr, startMin);
             } else {
@@ -605,7 +600,7 @@ public class HistoryTimeCardFragment extends Fragment{
             startTimeString = df.format(c.getTime());
             startTimeText.setText(startTimeString);
 
-            newProductivity = round(((treatmentMins / difference) * 100), 1);
+            newProductivity = round(((treatmentMins / difference) * 100));
             NumberFormat decimalFormat = new DecimalFormat("#0.0");
             NumberFormat noDecimal = new DecimalFormat("#0");
             if (decimalFormat.format(newProductivity).endsWith(".0")) {
@@ -641,7 +636,7 @@ public class HistoryTimeCardFragment extends Fragment{
 
         if (difference != 0) {
 
-            newProductivity = round(((newTreatmentMins / difference) * 100), 1);
+            newProductivity = round(((newTreatmentMins / difference) * 100));
             NumberFormat decimalFormat = new DecimalFormat("#0.0");
             NumberFormat noDecimal = new DecimalFormat("#0");
             if (decimalFormat.format(newProductivity).endsWith(".0")) {
@@ -661,7 +656,7 @@ public class HistoryTimeCardFragment extends Fragment{
 
         mHourHistory = (int) (endHourTotal/60);
         mMinuteHistory = (int)endHourTotal%60;
-        if (!mIsTwentyFourHistory) {
+        if (!is24HourMode) {
             df = new SimpleDateFormat("h:mm a");
             c.set(0, 0, 0, mHourHistory, mMinuteHistory);
         } else {
@@ -673,15 +668,18 @@ public class HistoryTimeCardFragment extends Fragment{
 
     }
 
-    private double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
+    /**
+     * creates rounded number with one decimal place, i.e. '89.8'
+     * @param value number to be rounded
+     * @return rounded value
+     */
+    private double round(double value) {
         BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        bd = bd.setScale(1, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
-    private void setOriginalValues(){
+    private void setTimeCardState(){
         String startStr = mTimeCard.getStartTime();
         String endStr = mTimeCard.getEndTime();
         String paidStr = "Paid Time: " + mTimeCard.getPaidTime();
@@ -699,7 +697,6 @@ public class HistoryTimeCardFragment extends Fragment{
             treatStr =  hr + " hrs "
                     + min + " mins (" + treatTime + " mins)";
         }
-
         txtTreatmentTime.setText(treatStr);
         startTimeText.setText(startStr);
         endTimeText.setText(endStr);
@@ -724,118 +721,110 @@ public class HistoryTimeCardFragment extends Fragment{
         newUnpaidTime = Double.parseDouble(mTimeCard.getUnpaidTime());
         newTravelTime = Double.parseDouble(mTimeCard.getTravelTime());
         newUnpaidString = mTimeCard.getUnpaidTime();
-        newTravelString = mTimeCard.getTravelTime();
         endHourTotal = (mHourHistory*60) + mMinuteHistory;
-
-
-
     }
 
+    /**
+     * changes fab icons state to shown
+     */
     private void showFABMenu() {
-        isFABOpen = true;
-        fab1.show();
-        fab2.show();
-        fab3.show();
-
-
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            fab1.animate().translationY(-getResources().getDimension(R.dimen.standard_55L));
-            fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_105L));
-            fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_155L));
+        isFabMenuOpen = true;
+        fabAlarm.show();
+        fabEmail.show();
+        fabSms.show();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            fabAlarm.animate().translationY(-getResources().getDimension(R.dimen.standard_55L));
+            fabEmail.animate().translationY(-getResources().getDimension(R.dimen.standard_105L));
+            fabSms.animate().translationY(-getResources().getDimension(R.dimen.standard_155L));
         }
         else {
-            fab1.animate().translationY(-getResources().getDimension(R.dimen.standard_65));
-            fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_120));
-            fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_175));
+            fabAlarm.animate().translationY(-getResources().getDimension(R.dimen.standard_65));
+            fabEmail.animate().translationY(-getResources().getDimension(R.dimen.standard_120));
+            fabSms.animate().translationY(-getResources().getDimension(R.dimen.standard_175));
         }
-
-
-    }
-    private void closeFABMenu() {
-        isFABOpen = false;
-        fab1.animate().translationY(0);
-        fab2.animate().translationY(0);
-        fab3.animate().translationY(0);
-        fab1.hide();
-        fab2.hide();
-        fab3.hide();
-
-
     }
 
+    /**
+     * returns fab menu icons to hidden state
+     */
+    private void closeFabMenu() {
+        isFabMenuOpen = false;
+        fabAlarm.animate().translationY(0);
+        fabEmail.animate().translationY(0);
+        fabSms.animate().translationY(0);
+        fabAlarm.hide();
+        fabEmail.hide();
+        fabSms.hide();
+    }
 
-    private void openFabMenu() {
-
-        if (!isFABOpen) {
-            showFABMenu();
-
+    /**
+     * changes menu state from open to closed, or vice versa
+     */
+    private void toggleFabMenu() {
+        if (isFabMenuOpen) {
+            closeFabMenu();
         } else {
-            closeFABMenu();
+            showFABMenu();
         }
     }
 
+    /**
+     * send current time card as email
+     */
     private void sendEmail() {
-
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String emailDate = df.format(mTimeCard.getTimeCardDate());
-
-        String endLine = "Start Time: " + mTimeCard.getStartTime()+
+        String emailBody = "Start Time: " + mTimeCard.getStartTime()+
                 "\nEnd Time: " + mTimeCard.getEndTime()+
                 "\nPaid Time: " + mTimeCard.getPaidTime()+
                 "\nUnpaid Time: " + mTimeCard.getUnpaidTime() + " mins"+
                 "\nMeeting/Travel: " + mTimeCard.getTravelTime() + " mins";
 
-
         Intent send = new Intent(Intent.ACTION_SENDTO);
-        String uriText = "mailto:" + Uri.encode("") +
-                "?subject=" + Uri.encode("Time Stamp for " + emailDate) + "&body=" + Uri.encode(endLine);
+        String uriText = "mailto:" + Uri.encode("")
+                + "?subject=" + Uri.encode("Time Stamp for " + emailDate)
+                + "&body=" + Uri.encode(emailBody);
         Uri uri = Uri.parse(uriText);
-
         send.setData(uri);
-        if (send.resolveActivity(getActivity().getPackageManager()) != null) {
+        if (send.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(send);
-
         }
-
-        closeFABMenu();
+        closeFabMenu();
     }
 
+    /**
+     * send current time card as SMS message
+     */
     private void sendSms() {
-
-
-        String endLine;
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy", Locale.US);
         String emailDate = df.format(mTimeCard.getTimeCardDate());
-
-        endLine = "Time Stamp for " + emailDate +
+        String smsBody = "Time Stamp for " + emailDate +
                 "\nStart Time: " + mTimeCard.getStartTime()+
                 "\nEnd Time: " + mTimeCard.getEndTime()+
                 "\nPaid Time: " + mTimeCard.getPaidTime()+
                 "\nUnpaid Time: " + mTimeCard.getUnpaidTime() + " mins"+
                 "\nMeeting/Travel: " + mTimeCard.getTravelTime() + " mins";
-
-
-
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("smsto:"));  // This ensures only SMS apps respond
-        intent.putExtra("sms_body", endLine);
-
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+        intent.putExtra("sms_body", smsBody);
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
-        else
+        else {
             Toast.makeText(getContext(), "No SMS app installed.", Toast.LENGTH_SHORT).show();
-        closeFABMenu();
+        }
+        closeFabMenu();
     }
 
+    /**
+     * set current time card's end time as alarm
+     */
     private void setAlarm() {
         Intent alarm = new Intent(AlarmClock.ACTION_SET_ALARM);
-
-            alarm.putExtra(AlarmClock.EXTRA_HOUR, mHourHistory);
-            alarm.putExtra(AlarmClock.EXTRA_MINUTES, mMinuteHistory);
-            getActivity().startActivity(alarm);
-
-        closeFABMenu();
+        alarm.putExtra(AlarmClock.EXTRA_HOUR, mHourHistory);
+        alarm.putExtra(AlarmClock.EXTRA_MINUTES, mMinuteHistory);
+        requireActivity().startActivity(alarm);
+        closeFabMenu();
     }
 
     @Override
@@ -843,7 +832,5 @@ public class HistoryTimeCardFragment extends Fragment{
         super.onPause();
         TimeCardLab.get(getActivity())
                 .updateTimeCardDB(mTimeCard);
-
-        
     }
 }

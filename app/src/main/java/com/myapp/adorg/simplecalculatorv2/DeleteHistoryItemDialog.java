@@ -13,6 +13,9 @@ import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
+/**
+ * shows dialog when user tries to delete a particular time card
+ */
 public class DeleteHistoryItemDialog extends DialogFragment {
 
     public static final String EXTRA_DELETED =
@@ -29,15 +32,13 @@ public class DeleteHistoryItemDialog extends DialogFragment {
         return fragment;
     }
 
-
-    private void sendTimeResult(int resultCode, boolean isDeleted){
+    private void sendTimeResult(){
         if(getTargetFragment()==null){
             return;
         }
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_DELETED, isDeleted);
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+        intent.putExtra(EXTRA_DELETED, true);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     }
     @NonNull
     @Override
@@ -45,7 +46,6 @@ public class DeleteHistoryItemDialog extends DialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_history_delete_item, null);
         int resId;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             resId = R.style.MyDialogTheme;
         } else {
@@ -54,22 +54,9 @@ public class DeleteHistoryItemDialog extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity(), resId)
                 .setView(v)
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sendTimeResult(Activity.RESULT_OK, true);
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                })
+                .setPositiveButton("Delete", (dialog, which) -> sendTimeResult())
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
                 .create();
     }
-
-
-
 }
 

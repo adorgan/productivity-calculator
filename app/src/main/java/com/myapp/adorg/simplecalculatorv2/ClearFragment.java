@@ -12,9 +12,9 @@ import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
-
-
-
+/**
+ * Dialog shown when user tries to clear their time card history
+ */
 public class ClearFragment extends DialogFragment {
 
     private OnFragmentInteractionListener mListener;
@@ -23,7 +23,6 @@ public class ClearFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -31,35 +30,21 @@ public class ClearFragment extends DialogFragment {
                 .inflate(R.layout.fragment_clear, null);
 
         int resId;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             resId = R.style.MyDialogTheme;
         } else {
             resId = 0;
         }
 
-
         return new AlertDialog.Builder(getActivity(), resId)
                 .setView(v)
-                .setPositiveButton("Clear", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.isCleared(true);
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                })
+                .setPositiveButton("Clear", (dialog, which) -> mListener.isCleared(true))
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
                 .create();
     }
 
-
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -76,7 +61,6 @@ public class ClearFragment extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        //
         void isCleared(boolean cleared);
     }
 }

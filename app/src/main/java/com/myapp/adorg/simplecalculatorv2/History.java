@@ -1,6 +1,7 @@
 package com.myapp.adorg.simplecalculatorv2;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,31 +33,23 @@ import java.util.UUID;
 public class History extends AppCompatActivity implements ClearFragment.OnFragmentInteractionListener, DeleteHistoryItemDialogActivity.OnFragmentInteractionListener{
 
 
-    private RecyclerView mCrimeRecyclerView;
     private TimeCardAdapter mAdapter;
-    private boolean mClearAll;
-    private TextView textView;
-    private ImageView sadFace;
     private int adapterPosition;
     private Toolbar historyToolbar;
-    private MenuItem menuClear, menuDelete, menuEdit, menuHome;
+    private MenuItem menuClear, menuDelete, menuEdit;
     private boolean longPressed = false;
-    private View selectedView;
     private List<TimeCard> mTimeCards;
-    private List<TimeCard> timeCards;
-    private ArrayList<TimeCard> deletedTimeCards = new ArrayList<>();
-    private TimeCard timeCard;
-    private ArrayList<UUID> uuidArrayList = new ArrayList<>();
-    private ArrayList<View> viewArrayList = new ArrayList<>();
-    private ArrayList<Double>timeWorkedArray = new ArrayList<>();
-    private ArrayList<Double>prodArray = new ArrayList<>();
-
-
-
+    private final ArrayList<TimeCard> deletedTimeCards = new ArrayList<>();
+    private final ArrayList<UUID> uuidArrayList = new ArrayList<>();
+    private final ArrayList<View> viewArrayList = new ArrayList<>();
+    private final ArrayList<Double>timeWorkedArray = new ArrayList<>();
+    private final ArrayList<Double>prodArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // set up theme
         if (Preferences.getDarkMode(getApplicationContext())) {
             setTheme(R.style.DarkTheme);
         } else {
@@ -64,58 +57,50 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
         }
         setContentView(R.layout.activity_history);
 
-
+        // set up toolbar
         historyToolbar = findViewById(R.id.historyToolbar);
         setSupportActionBar(historyToolbar);
         final ActionBar ab = getSupportActionBar();
-
+        assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
 
+        //If history is empty, show No History un-smiley
+        TextView textViewNoHistory = findViewById(R.id.noHistoryTextView);
+        ImageView sadFace = findViewById(R.id.sadFace);
 
-        textView = findViewById(R.id.noHistoryTextView);
-        sadFace = findViewById(R.id.sadFace);
-
-        //If history is empty, show No History smiley
         SQLiteDatabase myDB = this.openOrCreateDatabase("timeCard.db", MODE_PRIVATE, null);
         Cursor cur = myDB.rawQuery("SELECT COUNT(*) FROM \"history_menu\"", null);
         if (cur != null){
             cur.moveToFirst();
             if (cur.getInt(0) != 0) {
-                textView.setVisibility(View.GONE);
+                textViewNoHistory.setVisibility(View.GONE);
                 sadFace.setVisibility(View.GONE);
             } else {
-                textView.setVisibility(View.VISIBLE);
+                textViewNoHistory.setVisibility(View.VISIBLE);
                 sadFace.setVisibility(View.VISIBLE);
             }
             cur.close();
         }
 
 
+        RecyclerView timeCardRecyclerView = findViewById(R.id.recyclerView);
+        timeCardRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-
-
-        mCrimeRecyclerView = findViewById(R.id.recyclerView);
-
-        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        TimeCardLab timeCardLab = TimeCardLab.get(getApplicationContext());
-        timeCards = timeCardLab.getTimeCards();
+        TimeCardLab timeCardDB = TimeCardLab.get(getApplicationContext());
+        List<TimeCard> timeCards = timeCardDB.getTimeCards();
         if (mAdapter == null) {
             mAdapter = new TimeCardAdapter(timeCards);
-            mCrimeRecyclerView.setAdapter(mAdapter);
+            timeCardRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.setCrimes(timeCards);
+            mAdapter.setTimeCards(timeCards);
         }
-        mCrimeRecyclerView.setItemViewCacheSize(timeCards.size());
-        mCrimeRecyclerView.scrollToPosition(timeCards.size() - 1);
-
-
+        timeCardRecyclerView.setItemViewCacheSize(timeCards.size());
+        timeCardRecyclerView.scrollToPosition(timeCards.size() - 1);
     }
 
     @Override
     public void isCleared(boolean cleared) {
-        mClearAll = cleared;
-        if(mClearAll){
+        if(cleared){
             TimeCardLab timeCardLab = TimeCardLab.get(getApplicationContext());
             timeCardLab.deleteAll();
             Toast.makeText(this, "History cleared.", Toast.LENGTH_SHORT).show();
@@ -129,9 +114,7 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
         TimeCardLab timeCardLab = TimeCardLab.get(getApplicationContext());
         for(int i = 0; i < deletedTimeCards.size(); i++) {
             timeCardLab.searchAndDelete(deletedTimeCards.get(i).getId());
-
         }
-
         TypedValue outValue = new TypedValue();
         getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
         for(int i = 0; i < viewArrayList.size()-1; i++) {
@@ -152,10 +135,6 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
 
 
     private class TimeCardAdapter extends RecyclerView.Adapter<TimeCardAdapter.TimeCardHolder> {
-
-
-
-
         TimeCardAdapter(List<TimeCard> timeCards) {
             mTimeCards = timeCards;
         }
@@ -168,16 +147,10 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
         }
 
         @Override
-        public void onBindViewHolder(@NonNull TimeCardHolder holder, int position) {
-
-
-            timeCard = mTimeCards.get(position);
+        public void onBindViewHolder(@NonNull TimeCardHolder holder, @SuppressLint("RecyclerView") int position) {
+            TimeCard timeCard = mTimeCards.get(position);
             adapterPosition = position;
-            //timeCard.setmPosition(position);
-
             holder.bind(timeCard);
-
-
         }
 
         @Override
@@ -185,21 +158,18 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
             return mTimeCards.size();
         }
 
-        void setCrimes(List<TimeCard> crimes) {
-            mTimeCards = crimes;
+        void setTimeCards(List<TimeCard> timeCards) {
+            mTimeCards = timeCards;
         }
 
-
         private class TimeCardHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-            private TextView mStartTimeTextView;
-            private TextView mDateTextView;
-            private TextView mProductivityTextView;
-            private TextView mPaidTime;
+            private final TextView mStartTimeTextView;
+            private final TextView mDateTextView;
+            private final TextView mProductivityTextView;
+            private final TextView mPaidTime;
             private TimeCard mTimeCard;
 
-
-
-
+            @SuppressLint("UseCompatLoadingForDrawables")
             TimeCardHolder(LayoutInflater inflater, ViewGroup parent) {
                 super(inflater.inflate(R.layout.list_item_time_card, parent, false));
 
@@ -209,58 +179,46 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                 mProductivityTextView = itemView.findViewById(R.id.productivityTextView);
                 mPaidTime = itemView.findViewById(R.id.list_paid);
                 if(Preferences.getDarkMode(getApplicationContext())){
-                    mDateTextView.setTextColor(getResources().getColor(R.color.colorWgite));
-                    mStartTimeTextView.setTextColor(getResources().getColor(R.color.colorWgite));
-                    mProductivityTextView.setTextColor(getResources().getColor(R.color.colorWgite));
-                    mPaidTime.setTextColor(getResources().getColor(R.color.colorWgite));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        listItemLayout.setBackground(getDrawable(R.drawable.ripple_textbox));
-                    }
-
+                    mDateTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                    mStartTimeTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                    mProductivityTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                    mPaidTime.setTextColor(getResources().getColor(R.color.colorWhite));
                 }
                 else{
                     mDateTextView.setTextColor(getResources().getColor(R.color.colorBlack));
                     mStartTimeTextView.setTextColor(getResources().getColor(R.color.darkGray));
                     mProductivityTextView.setTextColor(getResources().getColor(R.color.colorBlack));
                     mPaidTime.setTextColor(getResources().getColor(R.color.darkGray));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        listItemLayout.setBackground(getDrawable(R.drawable.ripple_textbox));
-                    }
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    listItemLayout.setBackground(getDrawable(R.drawable.ripple_textbox));
                 }
                 itemView.setOnClickListener(this);
                 itemView.setOnLongClickListener(this);
-
             }
 
             void bind(TimeCard crime) {
-
                 mTimeCard = crime;
                 mDateTextView.setText(mTimeCard.getDate());
                 mStartTimeTextView.setText(mTimeCard.getStartTime() + " - " + mTimeCard.getEndTime());
                 mProductivityTextView.setText(mTimeCard.getProductivityString() + "%");
                 mPaidTime.setText(mTimeCard.getPaidTime() + "");
-
             }
-
 
             @Override
             public void onClick(View v) {
-
                 if(!longPressed) {
                     adapterPosition = getAdapterPosition();
                     Intent intent = HistoryTimeCardActivity.newIntent(getApplicationContext(), mTimeCard.getId());
                     startActivity(intent);
                 }
                 else {
-                    updateShade(mTimeCard.getId(), itemView, mTimeCard, mTimeCard.getPaidTimeInt(), mTimeCard.getProductivityDouble());
-
+                    updateShade(mTimeCard.getId(), itemView, mTimeCard);
                 }
-
             }
 
             @Override
             public boolean onLongClick(View view) {
-
                 if(!longPressed) {
                     uuidArrayList.add(mTimeCard.getId());
                     deletedTimeCards.add(mTimeCard);
@@ -277,13 +235,11 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                         view.setBackgroundColor(getResources().getColor(R.color.highlighted));
                     }
                     historyToolbar.setNavigationIcon(R.drawable.ex_icon);
-                    //selectedView = v;
-
                 }
                 return true;
             }
 
-        } void updateShade(UUID uuid, View view, TimeCard mTimeCard, Integer paidTime, Double prod){
+        } void updateShade(UUID uuid, View view, TimeCard mTimeCard){
 
             if (uuidArrayList.contains(uuid)){
                 view.setBackgroundColor(0);
@@ -293,10 +249,10 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                 uuidArrayList.add(uuid);
                 if (Preferences.getDarkMode(getApplicationContext())) {
                     view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                } else {
+                }
+                else {
                     view.setBackgroundColor(getResources().getColor(R.color.highlighted));
                 }
-
                 viewArrayList.add(view);
                 deletedTimeCards.add(mTimeCard);
             }
@@ -306,23 +262,22 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
 
     @Override
     protected void onResume() {
-        if(Preferences.getPrefDelete(this)) {
+        if (Preferences.getPrefDelete(this)) {
             Preferences.setPrefDelete(this, false);
             Intent intent = getIntent();
             finish();
             startActivity(intent);
-        } else if(Preferences.getDateChange(this)){
+        }
+        else if (Preferences.getDateChange(this)){
             Preferences.setDateChange(this, false);
             Intent intent = getIntent();
             finish();
             startActivity(intent);
         }
-
         else {
-            TimeCardLab crimeLab = TimeCardLab.get(getApplicationContext());
-            List<TimeCard> crimes = crimeLab.getTimeCards();
-
-            mAdapter.setCrimes(crimes);
+            TimeCardLab timeCardDB = TimeCardLab.get(getApplicationContext());
+            List<TimeCard> timeCards = timeCardDB.getTimeCards();
+            mAdapter.setTimeCards(timeCards);
             mAdapter.notifyItemChanged(adapterPosition);
         }
         super.onResume();
@@ -332,7 +287,6 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.history_menu, menu);
-
         menuClear = menu.findItem(R.id.historyMenuClear);
         menuDelete = menu.findItem(R.id.historyMenuDelete);
         menuEdit = menu.findItem(R.id.historyMenuEdit);
@@ -341,6 +295,7 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -348,41 +303,25 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                 FragmentManager fm = getSupportFragmentManager();
                 ClearFragment cm = new ClearFragment();
                 fm.beginTransaction().add(cm, "clear").commit();
-
                 return true;
             }
             case android.R.id.home: {
-
-                if(longPressed){
-                    TypedValue outValue = new TypedValue();
-                    getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-                    for(int i = 0; i < viewArrayList.size(); i++) {
-                        viewArrayList.get(i).setBackgroundResource(outValue.resourceId);
-                    }
-                    viewArrayList.clear();
-                    uuidArrayList.clear();
-                    timeWorkedArray.clear();
-                    menuDelete.setVisible(false);
-                    menuEdit.setVisible(false);
-                    menuClear.setVisible(true);
-                    longPressed = false;
-                    historyToolbar.setTitle("History");
-                    historyToolbar.setNavigationIcon(R.drawable.arrow_back);
-                    prodArray.clear();
-                    deletedTimeCards.clear();
-
-                    return true;
-                }else {
-                    onBackPressed();
-                    return true;
+                if (longPressed){
+                    exitLongPress();
                 }
+                else {
+                    onBackPressed();
+                }
+                return true;
 
-            }case R.id.historyMenuDelete:{
+            }
+            case R.id.historyMenuDelete:{
                 FragmentManager fm = getSupportFragmentManager();
                 DeleteHistoryItemDialogActivity cm = new DeleteHistoryItemDialogActivity();
                 fm.beginTransaction().add(cm, "delete_item").commit();
                 return true;
-            }case R.id.historyMenuEdit:{
+            }
+            case R.id.historyMenuEdit:{
 
                 for(int i = 0; i<deletedTimeCards.size(); i++){
                     double p = Double.parseDouble(deletedTimeCards.get(i).getProductivityString());
@@ -403,7 +342,6 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
                 FragmentManager fm = getSupportFragmentManager();
                 StatsFragment cm = StatsFragment.newInstance(totalTimeWorked, totalProd);
                 fm.beginTransaction().add(cm, "stats_get").commit();
-
                 prodArray.clear();
                 timeWorkedArray.clear();
                 return true;
@@ -415,28 +353,31 @@ public class History extends AppCompatActivity implements ClearFragment.OnFragme
     @Override
     public void onBackPressed() {
         if(longPressed){
-            TypedValue outValue = new TypedValue();
-            getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-            for(int i = 0; i < viewArrayList.size(); i++) {
-                viewArrayList.get(i).setBackgroundResource(outValue.resourceId);
-            }
-            timeWorkedArray.clear();
-            uuidArrayList.clear();
-            viewArrayList.clear();
-            menuDelete.setVisible(false);
-            menuEdit.setVisible(false);
-            menuClear.setVisible(true);
-            longPressed = false;
-            historyToolbar.setTitle("History");
-            historyToolbar.setNavigationIcon(R.drawable.arrow_back);
-            prodArray.clear();
-            deletedTimeCards.clear();
+            exitLongPress();
         }else {
             super.onBackPressed();
         }
     }
 
-
-
-
+    /**
+     * user will exit long-press state by hitting back button
+     */
+    public void exitLongPress(){
+        TypedValue outValue = new TypedValue();
+        getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        for(int i = 0; i < viewArrayList.size(); i++) {
+            viewArrayList.get(i).setBackgroundResource(outValue.resourceId);
+        }
+        timeWorkedArray.clear();
+        uuidArrayList.clear();
+        viewArrayList.clear();
+        menuDelete.setVisible(false);
+        menuEdit.setVisible(false);
+        menuClear.setVisible(true);
+        longPressed = false;
+        historyToolbar.setTitle("History");
+        historyToolbar.setNavigationIcon(R.drawable.arrow_back);
+        prodArray.clear();
+        deletedTimeCards.clear();
+    }
 }
