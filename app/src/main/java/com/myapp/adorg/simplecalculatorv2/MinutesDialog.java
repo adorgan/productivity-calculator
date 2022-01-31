@@ -16,29 +16,36 @@ import android.widget.EditText;
 
 
 public class MinutesDialog extends DialogFragment {
-
+    public enum MinutesDialogMode {
+        WHOLE_MINUTES,
+        HOURS_MINUTES
+    };
     private EditText editTextHH, editTextMM, editTextMinutes;
     private int finalTxInt;
-    boolean isMinutesOnlyMode; // minutes int format if true, else HH:MM format
+    private MinutesDialogMode treatmentMinutesMode;
     private static final String ARG_DIALOG_TITLE = "dialog_title_Minutes_Dialog";
+    private static final String ARG_DIALOG_MINUTES = "arg_dialog_minutes";
+    private static final String ARG_DIALOG_MINUTES_MODE = "arg_dialog_24_hour_mode";
     public static final String EXTRA_MINUTE = "dialog_extra_minute";
     public static final String EXTRA_MINUTES_MODE = "dialog_extra_minutes_mode";
 
-    public static MinutesDialog newMinutesDialog(String dialogTitle) {
+    public static MinutesDialog newMinutesDialog(String dialogTitle, int parentTxMinutesTotal, MinutesDialogMode dialogMinutesMode) {
         Bundle args = new Bundle();
         args.putString(ARG_DIALOG_TITLE, dialogTitle);
+        args.putInt(ARG_DIALOG_MINUTES, parentTxMinutesTotal);
+        args.putSerializable(ARG_DIALOG_MINUTES_MODE, dialogMinutesMode);
         MinutesDialog fragment = new MinutesDialog();
         fragment.setArguments(args);
         return fragment;
     }
 
-    private void sendResult(int totalMinutes, boolean isMinutesOnlyMode) {
+    private void sendResult(int totalMinutes, MinutesDialogMode minutesDialogMode) {
         if (getTargetFragment() == null) {
             return;
         }
         Intent intent = new Intent();
         intent.putExtra(EXTRA_MINUTE, totalMinutes);
-        intent.putExtra(EXTRA_MINUTES_MODE, isMinutesOnlyMode);
+        intent.putExtra(EXTRA_MINUTES_MODE, minutesDialogMode);
         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     }
 
@@ -50,9 +57,33 @@ public class MinutesDialog extends DialogFragment {
 
         assert getArguments() != null;
         String strTitle = getArguments().getString(ARG_DIALOG_TITLE, "");
+        finalTxInt = getArguments().getInt(ARG_DIALOG_MINUTES, 0);
+        treatmentMinutesMode = (MinutesDialogMode) getArguments().getSerializable(ARG_DIALOG_MINUTES_MODE);
         editTextHH = v.findViewById(R.id.editTextDialogHH);
         editTextMM = v.findViewById(R.id.editTextDialogMM);
         editTextMinutes = v.findViewById(R.id.editTextDialogMinutes);
+
+        // setup minute fields if any come in from parent
+        if (finalTxInt != 0){
+            switch (treatmentMinutesMode){
+                case HOURS_MINUTES: {
+                    if ((finalTxInt / 60) != 0){
+                        editTextHH.setText(String.valueOf(finalTxInt / 60));
+                    }
+                    if ((finalTxInt % 60) != 0){
+                        editTextMM.setText(String.valueOf(finalTxInt % 60));
+                    }
+                    editTextMinutes.setFocusable(false);
+                    break;
+                }
+                case WHOLE_MINUTES:
+                    editTextMinutes.setText(String.valueOf(finalTxInt));
+                    editTextHH.setFocusable(false);
+                    editTextMM.setFocusable(false);
+            }
+        }
+
+        editTextMM.clearFocus();
 
         editTextHH.addTextChangedListener(new TextWatcher() {
             @Override
@@ -63,15 +94,16 @@ public class MinutesDialog extends DialogFragment {
                 // disable minutes only EditText if HH has characters, otherwise enable
                 if(!s.toString().equals("")) {
                     editTextMinutes.setFocusable(false);
-                    isMinutesOnlyMode = false;
+                    treatmentMinutesMode = MinutesDialogMode.HOURS_MINUTES;
                 }
                 else {
                     if(editTextMM.getText().toString().equals("")){
                         editTextMinutes.setFocusable(true);
                         editTextMinutes.setFocusableInTouchMode(true);
-                        isMinutesOnlyMode = true;
+                        treatmentMinutesMode = MinutesDialogMode.WHOLE_MINUTES;
                     }
                 }
+                System.out.println(treatmentMinutesMode);
             }
 
             @Override
@@ -85,13 +117,13 @@ public class MinutesDialog extends DialogFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().equals("")) {
                     editTextMinutes.setFocusable(false);
-                    isMinutesOnlyMode = false;
+                    treatmentMinutesMode = MinutesDialogMode.HOURS_MINUTES;
                 }
                 else {
                     if(editTextHH.getText().toString().equals("")){
                         editTextMinutes.setFocusable(true);
                         editTextMinutes.setFocusableInTouchMode(true);
-                        isMinutesOnlyMode = true;
+                        treatmentMinutesMode = MinutesDialogMode.WHOLE_MINUTES;
                     }
                 }
             }
@@ -108,15 +140,14 @@ public class MinutesDialog extends DialogFragment {
                 if(!s.toString().equals("")) {
                     editTextHH.setFocusable(false);
                     editTextMM.setFocusable(false);
-                    isMinutesOnlyMode = true;
                 }
                 else {
                     editTextHH.setFocusable(true);
                     editTextHH.setFocusableInTouchMode(true);
                     editTextMM.setFocusable(true);
                     editTextMM.setFocusableInTouchMode(true);
-                    isMinutesOnlyMode = false;
                 }
+                treatmentMinutesMode = MinutesDialogMode.WHOLE_MINUTES;
             }
 
             @Override
@@ -128,7 +159,7 @@ public class MinutesDialog extends DialogFragment {
                 .setTitle(strTitle)
                 .setPositiveButton(android.R.string.ok,
                         (dialog, which) -> {
-                            if (isMinutesOnlyMode){
+                            if (treatmentMinutesMode == MinutesDialogMode.WHOLE_MINUTES){
                                 if(editTextMinutes.getText().toString().equals(""))
                                     finalTxInt = 0;
                                 else finalTxInt = Integer.parseInt(editTextMinutes.getText().toString());
@@ -141,7 +172,7 @@ public class MinutesDialog extends DialogFragment {
                                     finalTxInt = Integer.parseInt(editTextHH.getText().toString()) * 60;
                                 }else finalTxInt = (Integer.parseInt(editTextHH.getText().toString()) * 60) + Integer.parseInt(editTextMM.getText().toString());
                             }
-                            sendResult(finalTxInt, isMinutesOnlyMode);
+                            sendResult(finalTxInt, treatmentMinutesMode);
                         })
                 .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
                 .create();

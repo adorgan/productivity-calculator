@@ -36,6 +36,7 @@ import java.util.UUID;
 public class HistoryTimeCardFragment extends Fragment{
 
     private static final String ARG_HISTORY_TIME_CARD_ID = "history_time_card_ID";
+    private MinutesDialog.MinutesDialogMode treatmentMinutesMode = MinutesDialog.MinutesDialogMode.HOURS_MINUTES;
     private TimeCard mTimeCard;
     private TextView endTimeText, startTimeText, paidTime, txtUnpaidTime, txtPaidBreak, txtProductivity, txtTreatmentTime, txtToolBar;
     private int  startHr, startMin;
@@ -159,7 +160,7 @@ public class HistoryTimeCardFragment extends Fragment{
         txtTreatmentTime = v.findViewById(R.id.treatmentTimeHistoryTC);
         txtTreatmentTime.setOnClickListener(v18 -> {
             FragmentManager fm = getParentFragmentManager();
-            MinutesDialog changeNumberDialog = MinutesDialog.newMinutesDialog("Enter New Treatment Amount");
+            MinutesDialog changeNumberDialog = MinutesDialog.newMinutesDialog("Enter New Treatment Amount", newTreatmentMins, treatmentMinutesMode);
             changeNumberDialog.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_TREAT_MINS );
             changeNumberDialog.show(fm, DIALOG_TREAT_MINS);
         });
@@ -403,6 +404,7 @@ public class HistoryTimeCardFragment extends Fragment{
                 Toast.makeText(getContext(), "Unable to calculate", Toast.LENGTH_LONG).show();
             else {
                 newTreatmentMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+                treatmentMinutesMode = (MinutesDialog.MinutesDialogMode) data.getSerializableExtra(MinutesDialog.EXTRA_MINUTES_MODE);
                 treatStr = (newTreatmentMins / 60) + " hrs " + (newTreatmentMins % 60) + " mins (" + newTreatmentMins + " mins)";
                 txtTreatmentTime.setText(treatStr);
                 reCalculateTreatTime();

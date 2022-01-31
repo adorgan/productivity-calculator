@@ -31,6 +31,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class CalculatorFragment extends Fragment{
+
+    private MinutesDialog.MinutesDialogMode treatmentMinutesMode = MinutesDialog.MinutesDialogMode.WHOLE_MINUTES;
+    private MinutesDialog.MinutesDialogMode unpaidMinutesMode = MinutesDialog.MinutesDialogMode.WHOLE_MINUTES;
+    private MinutesDialog.MinutesDialogMode paidMinutesMode = MinutesDialog.MinutesDialogMode.WHOLE_MINUTES;
     private int mHour, mMinute, mTreatmentMins, mUnpaidMins, mPaidMins;
     private double mProductivity;
     private boolean mIs24HrMode = false;
@@ -144,7 +148,7 @@ public class CalculatorFragment extends Fragment{
         treatmentMinutes = view.findViewById(R.id.txtTreatmentMinutes);
         treatmentMinutes.setOnClickListener(v -> {
             FragmentManager fm = getParentFragmentManager();
-            MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Total Treatment Time");
+            MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Total Treatment Time", mTreatmentMins, treatmentMinutesMode);
             minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_TX_MINUTES);
             minutesDialog.show(fm,"dialog_minutes");
         });
@@ -153,7 +157,7 @@ public class CalculatorFragment extends Fragment{
         unpaidMins = view.findViewById(R.id.txtUnpaidMins);
         unpaidMins.setOnClickListener(v -> {
             FragmentManager fm = getParentFragmentManager();
-            MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Unpaid Break/Lunch");
+            MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Unpaid Break/Lunch", mUnpaidMins, unpaidMinutesMode);
             minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_UNPAID_MINUTES);
             minutesDialog.show(fm,"dialog_unpaid_minutes");
         });
@@ -162,7 +166,7 @@ public class CalculatorFragment extends Fragment{
         paidMins = view.findViewById(R.id.txtPaidMins);
         paidMins.setOnClickListener(v -> {
             FragmentManager fm = getParentFragmentManager();
-            MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Paid Meeting/Travel");
+            MinutesDialog minutesDialog = MinutesDialog.newMinutesDialog("Paid Meeting/Travel", mPaidMins, paidMinutesMode);
             minutesDialog.setTargetFragment(CalculatorFragment.this, REQUEST_PAID_MINUTES);
             minutesDialog.show(fm,"dialog_paid_minutes");
         });
@@ -332,16 +336,19 @@ public class CalculatorFragment extends Fragment{
         else if (requestCode == REQUEST_TX_MINUTES) {
             // update tx minutes
             mTreatmentMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+            treatmentMinutesMode = (MinutesDialog.MinutesDialogMode) data.getSerializableExtra(MinutesDialog.EXTRA_MINUTES_MODE);
             treatmentMinutes.setText(createMinutesString(mTreatmentMins));
         }
         else if (requestCode == REQUEST_UNPAID_MINUTES) {
             // update unpaid minutes
             mUnpaidMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+            unpaidMinutesMode = (MinutesDialog.MinutesDialogMode) data.getSerializableExtra(MinutesDialog.EXTRA_MINUTES_MODE);
             unpaidMins.setText(createMinutesString(mUnpaidMins));
         }
         else if (requestCode == REQUEST_PAID_MINUTES) {
             // update paid minutes
             mPaidMins = data.getIntExtra(MinutesDialog.EXTRA_MINUTE, 0);
+            paidMinutesMode = (MinutesDialog.MinutesDialogMode) data.getSerializableExtra(MinutesDialog.EXTRA_MINUTES_MODE);
             paidMins.setText(createMinutesString(mPaidMins));
         }
     }
