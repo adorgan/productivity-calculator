@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.AlarmClock;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.ActionBar;
@@ -57,7 +59,7 @@ public class HistoryTimeCardFragment extends Fragment{
     private static final String DIALOG_UNPAID = "History_unpaid";
     private static final int REQUEST_TRAVEL = 9;
     private static final String DIALOG_TRAVEL = "History_travel";
-    private static final int REQUEST_PRODUCTVITY = 10;
+    private static final int REQUEST_PRODUCTIVITY = 10;
     private static final String DIALOG_PRODUCTIVITY = "history_productivity";
     private String newPaidString,treatStr;
     private int mMinuteHistory, mHourHistory;
@@ -73,7 +75,7 @@ public class HistoryTimeCardFragment extends Fragment{
     private double newUnpaidTime, newTravelTime;
     private String newUnpaidString;
     private double endHourTotal;
-    private FloatingActionButton fab, fabAlarm, fabEmail, fabSms;
+    private FloatingActionButton fabMain, fabAlarm, fabEmail, fabSms;
     private boolean isFabMenuOpen;
 
 
@@ -124,8 +126,8 @@ public class HistoryTimeCardFragment extends Fragment{
         });
 
         // set up fabs
-        fab = v.findViewById(R.id.fabHistoryTC);
-        fab.setOnClickListener(v1 -> toggleFabMenu());
+        fabMain = v.findViewById(R.id.fabHistoryTC);
+        fabMain.setOnClickListener(v1 -> toggleFabMenu());
 
         fabAlarm = v.findViewById(R.id.fab1HistoryTC);
         fabAlarm.setOnClickListener(v12 -> setAlarm());
@@ -190,7 +192,7 @@ public class HistoryTimeCardFragment extends Fragment{
         txtProductivity.setOnClickListener(v111 -> {
             FragmentManager fm = getParentFragmentManager();
             ProductivityPicker productivityPicker = ProductivityPicker.newInstance(newProductivity);
-            productivityPicker.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_PRODUCTVITY);
+            productivityPicker.setTargetFragment(HistoryTimeCardFragment.this, REQUEST_PRODUCTIVITY);
             productivityPicker.show(fm, DIALOG_PRODUCTIVITY);
         });
 
@@ -210,7 +212,7 @@ public class HistoryTimeCardFragment extends Fragment{
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.history_item_menu, menu);
         checkMenu = menu.findItem(R.id.menuItemSaved);
@@ -244,7 +246,7 @@ public class HistoryTimeCardFragment extends Fragment{
                 EditMenu.setVisible(false);
                 DeleteMenu.setVisible(false);
                 checkMenu.setVisible(true);
-                fab.animate().translationY(getResources().getDimension(R.dimen.standard_120));
+                fabMain.animate().translationY(getResources().getDimension(R.dimen.standard_120));
                 closeFabMenu();
 
                 return true;
@@ -321,7 +323,7 @@ public class HistoryTimeCardFragment extends Fragment{
         EditMenu.setVisible(true);
         DeleteMenu.setVisible(true);
         checkMenu.setVisible(false);
-        fab.animate().translationY(0);
+        fabMain.animate().translationY(0);
     }
 
     @Override
@@ -333,8 +335,8 @@ public class HistoryTimeCardFragment extends Fragment{
             // user wishes to delete selected time card from history
             boolean cleared = data.getBooleanExtra(DeleteHistoryItemDialog.EXTRA_DELETED, false);
             if(cleared) {
-                TimeCardLab timeCardLab = TimeCardLab.get(getContext());
-                timeCardLab.searchAndDelete(timeCardID);
+                TimeCardLab timeCardDB = TimeCardLab.get(getContext());
+                timeCardDB.searchAndDelete(timeCardID);
                 Preferences.setPrefDelete(getContext(), true);
                 requireActivity().onBackPressed();
             }
@@ -429,10 +431,11 @@ public class HistoryTimeCardFragment extends Fragment{
             } else {
                 newTravelTime = data.getIntExtra(ChangeNumberDialog.EXTRA_Minutes, 0);
                 endHourTotal = data.getDoubleExtra(ChangeNumberDialog.EXTRA_TOTAL, 0);
-                txtPaidBreak.setText((int) newTravelTime + " mins");
+//                txtPaidBreak.setText((int) newTravelTime + " mins");
+                txtPaidBreak.setText(getString(R.string.history_new_travel_time, (int)newTravelTime));
                 reCalculateTravelTime();
             }
-        } else if (requestCode == REQUEST_PRODUCTVITY) {
+        } else if (requestCode == REQUEST_PRODUCTIVITY) {
             int totalTreatMins;
 
             double inverse = (double)data.getIntExtra(ProductivityPicker.EXTRA_PRODUCTIVITY, 0) / 100;
@@ -440,8 +443,8 @@ public class HistoryTimeCardFragment extends Fragment{
             if ((totalTreatMins + newUnpaidTime) < 1440) {
 
                 newProductivity = data.getIntExtra(ProductivityPicker.EXTRA_PRODUCTIVITY, 0);
-                newProdString = (int)newProductivity + "";
-                txtProductivity.setText(newProdString + "%");
+                newProdString = (int)newProductivity + "%";
+                txtProductivity.setText(newProdString);
                 reCalculateProductivity();
             } else
                 Toast.makeText(getContext(), "Unable to calculate more than 24 hours worked", Toast.LENGTH_LONG).show();
@@ -475,16 +478,16 @@ public class HistoryTimeCardFragment extends Fragment{
         if ((totalTreatMins + newUnpaidTime) < 1440) {
 
             if (!is24HourMode) {
-                df = new SimpleDateFormat("h:mm a");
+                df = new SimpleDateFormat("h:mm a", Locale.US);
                 endTimeString = df.format(c.getTime());
                 endTimeText.setText(endTimeString);
             } else {
-                df = new SimpleDateFormat("HH:mm");
+                df = new SimpleDateFormat("HH:mm", Locale.US);
                 endTimeString = df.format(c.getTime());
                 endTimeText.setText(endTimeString);
             }
             newPaidString = totalTreatHrs + strHH + totalTreatMns + strMM;
-            paidTime.setText("Paid Time: " + newPaidString);
+            paidTime.setText(getString(R.string.history_paid_time, newPaidString));
             newPaidTime = totalTreatMins;
             endHourTotal = (mHourHistory*60) + mMinuteHistory;
         } else
@@ -495,43 +498,43 @@ public class HistoryTimeCardFragment extends Fragment{
         String strHH, strMM;
         endHourTotal = (mHourHistory*60) + mMinuteHistory;
         double startHourTotal = (startHr*60) + startMin;
-        double difference;
+        double shiftTimeInMinutes;
         if (endHourTotal > startHourTotal)
-            difference = (endHourTotal - startHourTotal) - newUnpaidTime - newTravelTime;
+            shiftTimeInMinutes = (endHourTotal - startHourTotal) - newUnpaidTime - newTravelTime;
         else if (startHourTotal > endHourTotal)
-            difference = 1440 - ((startHourTotal - endHourTotal) + newUnpaidTime + newTravelTime);
-        else difference = 0;
+            shiftTimeInMinutes = 1440 - ((startHourTotal - endHourTotal) + newUnpaidTime + newTravelTime);
+        else shiftTimeInMinutes = 0;
 
         double treatmentMins = (double)newTreatmentMins;
 
-        if((difference-newUnpaidTime)<=0){
+        if((shiftTimeInMinutes-newUnpaidTime)<=0){
             Toast.makeText(getContext(), "End time error", Toast.LENGTH_LONG).show();
         }
 
         else {
+            // set new end date string in time card
             if (!is24HourMode) {
-                df = new SimpleDateFormat("h:mm a");
-                c.set(0, 0, 0, mHourHistory, mMinuteHistory);
+                df = new SimpleDateFormat("h:mm a", Locale.US);
             } else {
-                df = new SimpleDateFormat("HH:mm");
-                c.set(0, 0, 0, mHourHistory, mMinuteHistory);
+                df = new SimpleDateFormat("HH:mm", Locale.US);
             }
+            c.set(0, 0, 0, mHourHistory, mMinuteHistory);
             endTimeString = df.format(c.getTime());
             endTimeText.setText(endTimeString);
 
-            newProductivity = round(((treatmentMins / difference) * 100));
+            // calculate new productivity
+            newProductivity = round(((treatmentMins / shiftTimeInMinutes) * 100));
             NumberFormat decimalFormat = new DecimalFormat("#0.0");
             NumberFormat noDecimal = new DecimalFormat("#0");
             if (decimalFormat.format(newProductivity).endsWith(".0")) {
                 newProdString = noDecimal.format(newProductivity);
-                txtProductivity.setText(newProdString + "%");
             } else {
                 newProdString = decimalFormat.format(newProductivity);
-                txtProductivity.setText(newProdString + "%");
             }
+            txtProductivity.setText(getString(R.string.history_new_productivity, newProdString));
 
-
-            newPaidTime = (int) difference + (int)newTravelTime;
+            // update paid time
+            newPaidTime = (int) shiftTimeInMinutes + (int)newTravelTime;
             if((newPaidTime / 60) == 1) strHH = " hr ";
             else strHH = " hrs ";
 
@@ -539,36 +542,39 @@ public class HistoryTimeCardFragment extends Fragment{
             else strMM = " mins";
 
             newPaidString = (newPaidTime / 60) + strHH + (newPaidTime % 60) + strMM;
-            paidTime.setText("Paid Time: " + newPaidString);
+            paidTime.setText(getString(R.string.history_paid_time, newPaidString));
         }
 
     }
     private void reCalculateTravelTime(){
         String strHH, strMM;
         endHourTotal = endHourTotal + newTravelTime;
-        if(endHourTotal>1440) endHourTotal = endHourTotal-1440;
+        if(endHourTotal>1440) {
+            endHourTotal = endHourTotal-1440;
+        }
         mHourHistory = (int)endHourTotal/60;
         mMinuteHistory = (int)endHourTotal%60;
 
+        // update end time string
         if (!is24HourMode) {
-            df = new SimpleDateFormat("h:mm a");
-            c.set(0, 0, 0, mHourHistory, mMinuteHistory);
+            df = new SimpleDateFormat("h:mm a", Locale.US);
         } else {
-            df = new SimpleDateFormat("HH:mm");
-            c.set(0, 0, 0, mHourHistory, mMinuteHistory);
+            df = new SimpleDateFormat("HH:mm", Locale.US);
         }
+        c.set(0, 0, 0, mHourHistory, mMinuteHistory);
         endTimeString = df.format(c.getTime());
         endTimeText.setText(endTimeString);
 
-
-            newPaidTime = (int) ((double)newTreatmentMins/(newProductivity/100)) + (int)newTravelTime;
+        // update paid time
+        newPaidTime = (int) ((double)newTreatmentMins/(newProductivity/100)) + (int)newTravelTime;
         if((newPaidTime / 60) == 1) strHH = " hr ";
         else strHH = " hrs ";
 
         if((newPaidTime % 60) == 1) strMM = " min";
         else strMM = " mins";
             newPaidString = (newPaidTime / 60) + strHH + (newPaidTime % 60) + strMM;
-            paidTime.setText("Paid Time: " + newPaidString);
+//            paidTime.setText("Paid Time: " + newPaidString);
+            paidTime.setText(getString(R.string.history_paid_time, newPaidString));
 
 
     }
@@ -576,52 +582,51 @@ public class HistoryTimeCardFragment extends Fragment{
         String strHH, strMM;
         double startHourTotal = (startHr*60) + startMin;
          endHourTotal = (mHourHistory*60) + mMinuteHistory;
-        double difference;
+        double shiftTimeInMinutes;
         if (endHourTotal > startHourTotal)
-            difference = (endHourTotal - startHourTotal) - newUnpaidTime - newTravelTime;
+            shiftTimeInMinutes = (endHourTotal - startHourTotal) - newUnpaidTime - newTravelTime;
         else if (startHourTotal > endHourTotal)
-            difference = 1440 - ((startHourTotal - endHourTotal) + newUnpaidTime + newTravelTime);
-        else difference = 0;
+            shiftTimeInMinutes = 1440 - ((startHourTotal - endHourTotal) + newUnpaidTime + newTravelTime);
+        else shiftTimeInMinutes = 0;
 
         double treatmentMins = (double)newTreatmentMins;
 
-        if((difference-newUnpaidTime)<=0){
+        if((shiftTimeInMinutes-newUnpaidTime)<=0){
             Toast.makeText(getContext(), "Start time error", Toast.LENGTH_LONG).show();
         }
 
         else {
-
+            // set start time text in time card
             if (!is24HourMode) {
-                df = new SimpleDateFormat("h:mm a");
-                c.set(0, 0, 0, startHr, startMin);
+                df = new SimpleDateFormat("h:mm a", Locale.US);
             } else {
-                df = new SimpleDateFormat("HH:mm");
-                c.set(0, 0, 0, startHr, startMin);
+                df = new SimpleDateFormat("HH:mm", Locale.US);
             }
+            c.set(0, 0, 0, startHr, startMin);
 
             startTimeString = df.format(c.getTime());
             startTimeText.setText(startTimeString);
 
-            newProductivity = round(((treatmentMins / difference) * 100));
+            // update productivity
+            newProductivity = round(((treatmentMins / shiftTimeInMinutes) * 100));
             NumberFormat decimalFormat = new DecimalFormat("#0.0");
             NumberFormat noDecimal = new DecimalFormat("#0");
             if (decimalFormat.format(newProductivity).endsWith(".0")) {
                 newProdString = noDecimal.format(newProductivity);
-                txtProductivity.setText(newProdString + "%");
             } else {
                 newProdString = decimalFormat.format(newProductivity);
-                txtProductivity.setText(newProdString + "%");
             }
+            txtProductivity.setText(getString(R.string.history_new_productivity, newProdString));
 
-
-            newPaidTime = (int) difference + (int)newTravelTime;
+            // update paid time field
+            newPaidTime = (int) shiftTimeInMinutes + (int)newTravelTime;
             if((newPaidTime / 60) == 1) strHH = " hr ";
             else strHH = " hrs ";
 
             if((newPaidTime % 60) == 1) strMM = " min";
             else strMM = " mins";
             newPaidString = (newPaidTime / 60) + strHH + (newPaidTime % 60) + strMM;
-            paidTime.setText("Paid Time: " + newPaidString);
+            paidTime.setText(getString(R.string.history_paid_time, newPaidString));
         }
 
     }
@@ -635,20 +640,16 @@ public class HistoryTimeCardFragment extends Fragment{
             difference = 1440 - ((startHourTotal - endHourTotal) + newUnpaidTime + newTravelTime);
         else difference = 0;
 
-
         if (difference != 0) {
-
             newProductivity = round(((newTreatmentMins / difference) * 100));
             NumberFormat decimalFormat = new DecimalFormat("#0.0");
             NumberFormat noDecimal = new DecimalFormat("#0");
             if (decimalFormat.format(newProductivity).endsWith(".0")) {
                 newProdString = noDecimal.format(newProductivity);
-                txtProductivity.setText(newProdString + "%");
             } else {
                 newProdString = decimalFormat.format(newProductivity);
-                txtProductivity.setText(newProdString + "%");
             }
-
+            txtProductivity.setText(getString(R.string.history_new_productivity, newProdString));
         }
     }
 
@@ -659,15 +660,14 @@ public class HistoryTimeCardFragment extends Fragment{
         mHourHistory = (int) (endHourTotal/60);
         mMinuteHistory = (int)endHourTotal%60;
         if (!is24HourMode) {
-            df = new SimpleDateFormat("h:mm a");
+            df = new SimpleDateFormat("h:mm a", Locale.US);
             c.set(0, 0, 0, mHourHistory, mMinuteHistory);
         } else {
-            df = new SimpleDateFormat("HH:mm");
+            df = new SimpleDateFormat("HH:mm", Locale.US);
             c.set(0, 0, 0, mHourHistory, mMinuteHistory);
         }
         endTimeString = df.format(c.getTime());
         endTimeText.setText(endTimeString);
-
     }
 
     /**

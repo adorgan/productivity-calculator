@@ -64,6 +64,11 @@ public class ChangeNumberDialog extends DialogFragment {
         editTextMM = v.findViewById(R.id.editTextDialogMM);
         editTextMinutes = v.findViewById(R.id.editTextDialogMinutes);
 
+        if (newMinuteAmount != 0){
+            editTextHH.setText(String.valueOf(newMinuteAmount / 60));
+            editTextMM.setText(String.valueOf(newMinuteAmount % 60));
+        }
+
         editTextHH.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
